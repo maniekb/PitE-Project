@@ -1,4 +1,4 @@
-# [PitE - Project]
+# Kryptonite
 ## Participants 
  - **Maciej Bolsęga**
  - Piotr Brunarski
