@@ -1,11 +1,16 @@
 from Kryptonite.Clients.base import BaseClient
 from Kryptonite.Clients.Poloniex.Models.TradeHistoryDto import to_trade_history
+from enum import Enum
+
+
+class PoloniexCurrencyPair(Enum):
+    BTC_ETH = 1
 
 
 class PoloniexClient(BaseClient):
     def __init__(self):
         url = "https://poloniex.com/public"
-        super().__init__(self.base_url)
+        super().__init__(url)
 
     def get_currency(self, currency_pair, start, end):
         params = self.__create_params('returnTradeHistory', currency_pair, start, end)
