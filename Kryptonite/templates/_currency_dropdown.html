@@ -1,0 +1,12 @@
+<div class="dropdown">
+    <button class="btn btn-primary btn-dark dropdown-toggle" type="button" data-toggle="dropdown">
+        Add currency
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu dropdown dark" id="currencies_list">
+        {% for currency in currencies %}
+        <li class="dropdown-item currency-item" onclick="currency_chosen(this)" value={{currency.id}}>{{ currency.label }}</li>
+        {% endfor %}
+    </ul>
+</div>
+

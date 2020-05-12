@@ -1,0 +1,42 @@
+html, body {
+    height: 100vh;
+    margin: 0 auto;
+    padding-top: 00px;
+}
+
+.main-container {
+    background: #555555;
+    height: 100vh;
+
+}
+
+.header-content {
+    overflow: auto;
+    height: 10vh;
+}
+
+.main-content {
+    overflow: auto;
+    height: 90vh;
+}
+
+.dropdown-menu {
+    background: #333333;
+}
+
+.dropdown .btn {
+    background: #333333;
+}
+
+.container .dropdown .dropdown-menu li {
+    color: whitesmoke;
+}
+
+.container .dropdown .dropdown-menu li a {
+    color: whitesmoke;
+    text-decoration: none;
+}
+
+.container .dropdown .dropdown-menu a:hover {
+    color: #333333;
+}
