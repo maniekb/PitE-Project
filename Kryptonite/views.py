@@ -24,7 +24,7 @@ def index(request):
 
 def get_data(request, *args, **kwargs):
     client = BinanceClient()
-    data = client.GetHistoricalDataWithInterval("ICXBTC", "1h", datetime(2020, 5, 12))
+    data = client.GetHistoricalDataWithInterval("BTCUSDT", "1d", datetime(2020, 1, 1))
     list = [{"open_time": x[0], "open": x[1]} for x in data]
 
     json.dumps(list)

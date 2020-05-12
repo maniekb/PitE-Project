@@ -40,3 +40,7 @@ html, body {
 .container .dropdown .dropdown-menu a:hover {
     color: #333333;
 }
+
+canvas {
+    background: whitesmoke
+}
