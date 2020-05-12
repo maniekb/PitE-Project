@@ -1,14 +1,14 @@
 {% if user.is_authenticated %}
     <div class="dropdown">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+        <button class="btn btn-primary btn-dark dropdown-toggle" type="button" data-toggle="dropdown">
             {{user.username}}
             <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu">
-            <li><a href="#">Favourites</a></li>
-            <li><a href="#">Virtual arbitrage</a></li>
-            <li><a href="#">My Account</a></li>
-            <li><a href={% url 'logout' %}>Logout</a></li>
+        <ul class="dropdown-menu dropdown dark">
+            <li class="dropdown-item"><a href="{% url 'favourites' %}">Favourites</a></li>
+            <li class="dropdown-item"><a href="{% url 'arbitrage' %}">Virtual arbitrage</a></li>
+            <li class="dropdown-item"><a href="{% url 'account' %}">My Account</a></li>
+            <li class="dropdown-item"><a href={% url 'logout' %}>Logout</a></li>
         </ul>
     </div>
 {% else %}

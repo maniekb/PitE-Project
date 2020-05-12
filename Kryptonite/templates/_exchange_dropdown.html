@@ -1,0 +1,13 @@
+<div class="dropdown">
+    <button class="btn btn-primary btn-dark dropdown-toggle" type="button" data-toggle="dropdown">
+        Add Exchange
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu dropdown dark" id="exchanges_list">
+        {% for exchange in exchanges %}
+            <li class="dropdown-item currency-item" onclick="exchange_chosen(this)"
+                value={{ exchange.id }}>{{ exchange.label }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
