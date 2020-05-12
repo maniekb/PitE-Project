@@ -8,6 +8,9 @@ from django.http import JsonResponse
 from django.http import Http404
 from django.contrib import messages
 import sweetify
+from Kryptonite.DataService.BinanceClient import BinanceClient
+from datetime import  datetime
+import json
 
 import logging
 
@@ -19,6 +22,16 @@ def index(request):
         return render(request, 'user_index.html')
     else:
         return render(request, 'index.html')
+
+
+def get_data(request, *args, **kwargs):
+    client = BinanceClient()
+    data = client.GetHistoricalDataWithInterval("BTCUSDT", "1d", datetime(2020, 1, 1))
+    list = [{"open_time": x[0], "open": x[1]} for x in data]
+
+    json.dumps(list)
+    return JsonResponse(list, safe=False)
+
 
 
 def register(request):
