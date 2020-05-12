@@ -5,6 +5,9 @@
  - Maciej Dworak
  - Piotr Ksel
 
+## Demo
+Demo of application (in early development phase) available here: https://kryptonite-pite.herokuapp.com/
+
 ## Introduction
 Idea of the project is to create application which gather data from external APIs about current cryptocurrency rates. It will create charts representing these rates. Further it will be able to calculate possible arbitrage trades - making profit out of buying/selling crypto based on price differences between markets (including margin).
 

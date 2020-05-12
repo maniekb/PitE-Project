@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <script src="{% static 'external/jquery-3.5.1.min.js' %}"></script>
+    <script src="{% static 'external/popper.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'external/bootstrap.min.css' %}">
+    <script src="{% static 'external/bootstrap.min.js' %}"></script>
+
+    <title>Kryptonite</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+</head>
+<body>
+<div class="col-sm-8 container main-container">
+    <div class="container">
+        <div class="row border-bottom">
+            <div class="col-sm-8">
+                <div>
+
+                </div>
+                <a href="{% url 'index' %}" style="color: green;  text-decoration: none;">
+                    <div class="col">
+                        <h1>KRYPTONITE</h1>
+                    </div>
+                    <div class="col">
+                        <h3>Your crypto portal</h3>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-4">
+                {% include '_navigation.html' %}
+            </div>
+        </div>
+    </div>
+    <div class="container main-content">
+        {% block content %}{% endblock %}
+
+    </div>
+</div>
+
+
+</body>
+
+{% block javascript %}{% endblock %}
+</html>

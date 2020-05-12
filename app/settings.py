@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Kryptonite.apps.KryptoniteConfig',
+    'bootstrap4'
 ]
 
 MIDDLEWARE = [
@@ -78,8 +79,12 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd8c8nqh0g1mee6',
+        'USER': 'cbplxexctvsflv',
+        'PASSWORD': 'fc18f6fe809bb1c43bc4f1517abdce5f7793f1d70f06a6878fff2c8def822e03',
+        'HOST': 'ec2-52-71-55-81.compute-1.amazonaws.com',
+        'PORT': '5432',
     }
 }
 

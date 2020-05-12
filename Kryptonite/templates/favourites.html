@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div id="currency_dropdown_container">
+        {% include '_currency_dropdown.html' %}
+    </div>
+    <br><br>
+    <div id="currency_buttons_container">
+        {% include '_currency_buttons.html' %}
+    </div>
+    <br><br><br><br>
+    <div id="exchange_dropdown_container">
+        {% include '_exchange_dropdown.html' %}
+    </div>
+    <br><br>
+    <div id="exchange_buttons_container">
+        {% include '_exchange_buttons.html' %}
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        function delete_fav_currency(t) {
+            let label = t.textContent
+            let id = t.value
+            let button = t
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'del_favourite_currency' %}',
+                data: {"id": id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function (data) {
+                    $(button).remove();
+                    let temp = $('<li/>', {
+                        class: "dropdown-item currency-item",
+                        value: id,
+                        html: label,
+                        onclick: "currency_chosen(this)"
+                    })
+                    $("#currencies_list").append(temp)
+                }
+            });
+        }
+
+        function currency_chosen(t) {
+            let label = t.textContent
+            let id = t.value
+            let row = t
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'add_favourite_currency' %}',
+                data: {"id": id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function (data) {
+                    $(row).remove();
+                    let temp = $('<button/>', {
+                        type: "button",
+                        class: "btn delete-button",
+                        value: id,
+                        html: label,
+                        onclick: "delete_fav_currency(this)"
+                    })
+                    $("#currency_buttons_container").append(temp)
+                }
+            });
+        }
+
+        function delete_fav_exchange(t) {
+            let label = t.textContent
+            let id = t.value
+            let button = t
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'del_favourite_exchange' %}',
+                data: {"id": id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function (data) {
+                    $(button).remove();
+                    let temp = $('<li/>', {
+                        class: "dropdown-item currency-item",
+                        value: id,
+                        html: label,
+                        onclick: "exchange_chosen(this)"
+                    })
+                    $("#exchanges_list").append(temp)
+                }
+            });
+        }
+
+        function exchange_chosen(t) {
+            let label = t.textContent
+            let id = t.value
+            let row = t
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'add_favourite_exchange' %}',
+                data: {"id": id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function (data) {
+                    $(row).remove();
+                    let temp = $('<button/>', {
+                        type: "button",
+                        class: "btn delete-button",
+                        value: id,
+                        html: label,
+                        onclick: "delete_fav_exchange(this)"
+                    })
+                    $("#exchange_buttons_container").append(temp)
+                }
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,3 @@
+{% for currency in curr_buttons %}
+    <button type="button" class="btn delete-button" onclick="delete_fav_currency(this)" value={{ currency.id }}>{{ currency.label }}</button>
+{% endfor %}
