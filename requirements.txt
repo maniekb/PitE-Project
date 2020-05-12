@@ -10,6 +10,8 @@ pytz==2020.1
 soupsieve==2.0
 sqlparse==0.3.1
 whitenoise==5.0.1
-requests==2.22.0
+requests==2.23.0
 sweetify==2.0.0
-python-binance==19.2.3
+python-binance==0.7.5
+numpy==1.18.4
+pandas==1.0.3
