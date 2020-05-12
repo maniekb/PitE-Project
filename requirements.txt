@@ -11,3 +11,4 @@ soupsieve==2.0
 sqlparse==0.3.1
 whitenoise==5.0.1
 requests==2.22.0
+python-binance==19.2.3
