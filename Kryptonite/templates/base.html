@@ -8,6 +8,7 @@
     <script src="{% static 'external/jquery-3.5.1.min.js' %}"></script>
     <script src="{% static 'external/popper.min.js' %}"></script>
     <link rel="stylesheet" href="{% static 'external/bootstrap.min.css' %}">
+    <script src="{% static 'external/sweetalert2.all.min.js' %}"></script>
     <script src="{% static 'external/bootstrap.min.js' %}"></script>
 
     <title>Kryptonite</title>
@@ -42,7 +43,8 @@
     </div>
 </div>
 
-
+{% load sweetify %}
+{% sweetify %}
 </body>
 
 {% block javascript %}{% endblock %}
