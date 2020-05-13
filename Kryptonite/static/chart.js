@@ -7,8 +7,12 @@ $(document).ready(function() {
     $.ajax({
         method: "GET",
         url: endpoint,
+        data: {
+            symbol: "BTCUSDT",
+            interval: "1d",
+            date_start: new Date(2020, 0, 1).toUTCString()
+        },
         success: function(data){
-            console.log(data)
             for(var i = 0; i < data.length; i++)
             {
                 BinanceBTC.push(Number(data[i].open));
@@ -18,7 +22,7 @@ $(document).ready(function() {
             drawChart();
         },
         error: function(error_data){
-        console.log(error_data)
+            console.log(error_data)
         }
     });
 });
@@ -26,14 +30,14 @@ $(document).ready(function() {
 
 
 drawChart = function() {
-    var ctx = document.getElementById('myChart').getContext('2d');
+    var ctx = document.getElementById('binanceChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: Labels,
             datasets:[{
                 data: BinanceBTC,
-                label: "BTC - Binance",
+                label: "BTC",
                 fill: false,
                 borderColor: 'rgba(255, 0, 0, 0.6)',
                 hoverBorderColor: 'rgba(255, 0, 0, 0.8)'
@@ -42,7 +46,7 @@ drawChart = function() {
         options: {
             title: {
                 display: true,
-                text: 'Historical Data',
+                text: 'Binance',
                 fontColor: 'rgba(0, 0, 0, 0.6)',
                 fontSize: 20
               },
