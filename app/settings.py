@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'lt%b_hice_4o5@w8nm9381uj6qrg*5j8e*l)fi669i^p5$&r-z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://kryptonite-pite.herokuapp.com/']
 
 # Application definition
 
