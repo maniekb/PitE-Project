@@ -135,14 +135,14 @@ drawChart = function(dataContainers) {
                 pointStyle: 'line',
                 borderColor: 'rgba(54, 215, 183, 1)'
             }]
-        },     
+        },
         options: {
             title: {
                 display: true,
                 text: 'Binance',
                 fontColor: 'rgba(0, 0, 0, 0.6)',
                 fontSize: 20
-              },
+            },
             legend: {
                 labels: {
                     fontColor: 'rgb(255, 99, 132)',
@@ -152,7 +152,7 @@ drawChart = function(dataContainers) {
             scales: {
                 xAxes: [{
                     ticks: {
-                        callback: function(tick, index, array) {
+                        callback: function (tick, index, array) {
                             return (index % 4) ? "" : tick;
                         }
                     }
