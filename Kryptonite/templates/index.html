@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-    <script src="../static/chart.js"></script>
-    <canvas id="myChart" width="400" height="200" style="visibility: hidden"></canvas>
+  <p> 
+    <label><input type="radio" name="timespan" value="y"> Last year</label> 
+    <label><input type="radio" name="timespan" value="6m"> Last 6 months</label>
+    <label><input type="radio" name="timespan" value="1w"> Last week</label>
+    <label><input type="radio" name="timespan" value="1d" checked> Last day</label>
+  </p>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script src="../static/chart.js"></script>
+  <canvas id="binanceChart" width="400" height="200"></canvas>
 {% endblock %}

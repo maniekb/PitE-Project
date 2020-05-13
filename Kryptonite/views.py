@@ -24,9 +24,13 @@ def index(request):
         return render(request, 'index.html')
 
 
-def get_data(request, *args, **kwargs):
+def getBinanceData(request):
     client = BinanceClient()
-    data = client.GetHistoricalDataWithInterval("BTCUSDT", "1d", datetime(2020, 1, 1))
+    symbol = request.GET['symbol']
+    interval = request.GET['interval']
+    date_start = datetime.strptime(request.GET['date_start'], "%a, %d %b %Y %H:%M:%S %Z")
+    print(date_start)
+    data = client.GetHistoricalDataWithInterval(symbol, interval, date_start)
     list = [{"open_time": x[0], "open": x[1]} for x in data]
 
     json.dumps(list)
