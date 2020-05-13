@@ -1,10 +1,10 @@
 {% if user.is_authenticated %}
     <div class="dropdown">
-        <button class="btn btn-primary btn-dark dropdown-toggle" type="button" data-toggle="dropdown">
+        <button class="btn btn-dark dropdown-toggle" type="button" data-toggle="dropdown">
             {{user.username}}
             <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu dropdown dark">
+        <ul class="dropdown-menu dropdown">
             <li class="dropdown-item"><a href="{% url 'favourites' %}">Favourites</a></li>
             <li class="dropdown-item"><a href="{% url 'arbitrage' %}">Virtual arbitrage</a></li>
             <li class="dropdown-item"><a href="{% url 'account' %}">My Account</a></li>

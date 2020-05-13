@@ -9,42 +9,49 @@
     <script src="{% static 'external/popper.min.js' %}"></script>
     <link rel="stylesheet" href="{% static 'external/bootstrap.min.css' %}">
     <script src="{% static 'external/sweetalert2.all.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'external/sweetalert2_dark.css' %}">
     <script src="{% static 'external/bootstrap.min.js' %}"></script>
+    <script src="{% static 'external/Chart.min.js'%}"></script>
+
 
     <title>Kryptonite</title>
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'title.css' %}">
 </head>
 <body>
-<div class="col-sm-8 container main-container">
+<div class="col-md-8 container main-container">
     <div class="container">
         <div class="row border-bottom">
-            <div class="col-sm-8">
-                <div>
-
-                </div>
+            <div class="col-md-10 overflow-hidden">
                 <a href="{% url 'index' %}" style="color: green;  text-decoration: none;">
-                    <div class="col">
-                        <h1>KRYPTONITE</h1>
-                    </div>
-                    <div class="col">
-                        <h3>Your crypto portal</h3>
+                    <div class="col-md-12 title-container">
+                        <div class="main-text float-left">
+                            <div class="title-text">
+                                <div class="letters">
+                                    KRYPTONITE
+                                </div>
+                            </div>
+                        </div>
+                        <div class="secondary-text float-left">
+                            Your crypto portal
+                        </div>
                     </div>
                 </a>
             </div>
-            <div class="col-sm-4">
+            <div class="col-md-2">
                 {% include '_navigation.html' %}
             </div>
         </div>
-    </div>
-    <div class="container main-content">
-        {% block content %}{% endblock %}
+        <div class="container main-content">
+            {% block content %}{% endblock %}
 
+        </div>
     </div>
+
+    {% load sweetify %}
+    {% sweetify %}
 </div>
-
-{% load sweetify %}
-{% sweetify %}
 </body>
 
 {% block javascript %}{% endblock %}

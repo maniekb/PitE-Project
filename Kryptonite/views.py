@@ -9,7 +9,7 @@ from django.http import Http404
 from django.contrib import messages
 import sweetify
 from Kryptonite.DataService.BinanceClient import BinanceClient
-from datetime import  datetime
+from datetime import datetime
 import json
 
 import logging
