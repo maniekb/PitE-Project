@@ -6,7 +6,6 @@ class Alg:
 
     def generate_element(self,forexname,to,day,minute,price):
         element = {
-            "forex":forexname,
             "to": to,
             "day": day,
             "minute": minute,
@@ -24,6 +23,9 @@ class Alg:
                 tmp["elements"].append(elem)
 
     def generate_data(self):
+        forex = {
+            "currencies":[]
+        }
         currencies = {
             "currencies": []
         }
@@ -42,7 +44,7 @@ class Alg:
         self.addToCurrencies(currencies,ETH)
         self.addToCurrencies(currencies,RIP)
 
-        tmp_price = np.random.rand(100)
+        tmp_price = [1,2,0.5]
 
         for i in range(10):
             elem = self.generate_element('a','1','USD',str(i),tmp_price[i])

@@ -8,9 +8,9 @@ cg = CoinGeckoAPI()
 
 #print(json.dumps(cg.get_indexes(),indent=4))
 
-#print(cg.get_price(ids='bitcoin,litecoin,ethereum', vs_currencies='BTC'))
-#print(cg.get_coin_market_chart_by_id(id='bitcoin',vs_currency='usd',days='2'))
-print(cg.get_coin_history_by_id(id='bitcoin',date='13-12-2019'))
+#print(cg.get_price(ids='bitcoin,litecoin,ethereum', vs_currencies='BTC,ETH'))
+print(cg.get_coin_market_chart_by_id(id='bitcoin',vs_currency='usd',days='2'))
+#print(cg.get_coin_history_by_id(id='bitcoin',date= '13-12-2019'))
 
 #pip install alphavantage https://pypi.org/project/alphavantage/
 
