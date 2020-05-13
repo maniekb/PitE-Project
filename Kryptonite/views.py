@@ -1,11 +1,13 @@
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.shortcuts import render, redirect
 from .models.forms import RegistrationForm
 from .models.models import Currency, FavouriteCurrency, FavouriteExchange, Exchange
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.http import Http404
+from django.contrib import messages
+import sweetify
 from Kryptonite.DataService.BinanceClient import BinanceClient
 from datetime import  datetime
 import json
@@ -41,6 +43,8 @@ def register(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             if user is not None:
+                sweetify.success(request, title='Success', icon='success', text='Registration successful',
+                                 timer=5000, button='Ok')
                 login(request, user)
                 return redirect('/')
             else:
@@ -60,6 +64,8 @@ def login_user(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
+                sweetify.success(request, title='Success', icon='success', text='Login successful',
+                                 timer=5000, button='Ok')
                 return redirect('/')
             else:
                 return render(request, 'login.html', {'form': form})
@@ -71,6 +77,8 @@ def login_user(request):
 @login_required
 def logout_user(request):
     logout(request)
+    sweetify.success(request, title='Success', icon='success', text='You have been logged out',
+                     timer=5000, button='Ok')
     return redirect('/')
 
 
@@ -139,8 +147,21 @@ def add_favourite_exchange(request):
 
 @login_required
 def account(request):
-    # TODO
-    return render(request, 'account.html')
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            sweetify.success(request, title='Success', icon='success', text='You successfully changed your password',
+                             timer=5000, button='Ok')
+            return redirect('/')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'account.html', {
+        'form': form
+    })
 
 
 @login_required
