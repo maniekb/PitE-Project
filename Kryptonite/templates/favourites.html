@@ -1,24 +1,28 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
+    <h1>Your Favourites</h1>
+    <br>
     <div id="currency_dropdown_container">
         {% include '_currency_dropdown.html' %}
     </div>
-    <br><br>
+    <br>
     <div id="currency_buttons_container">
         {% include '_currency_buttons.html' %}
     </div>
-    <br><br><br><br>
+    <br><br>
     <div id="exchange_dropdown_container">
         {% include '_exchange_dropdown.html' %}
     </div>
-    <br><br>
+    <br>
     <div id="exchange_buttons_container">
         {% include '_exchange_buttons.html' %}
     </div>
 {% endblock %}
 
 {% block javascript %}
+    <script src="{% static 'utils.js' %}"></script>
     <script>
         function delete_fav_currency(t) {
             let label = t.textContent
@@ -30,12 +34,7 @@
                 data: {"id": id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
                 success: function (data) {
                     $(button).remove();
-                    let temp = $('<li/>', {
-                        class: "dropdown-item currency-item",
-                        value: id,
-                        html: label,
-                        onclick: "currency_chosen(this)"
-                    })
+                    let temp = createListItem(id, label, "currency_chosen(this)")
                     $("#currencies_list").append(temp)
                 }
             });
@@ -51,13 +50,7 @@
                 data: {"id": id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
                 success: function (data) {
                     $(row).remove();
-                    let temp = $('<button/>', {
-                        type: "button",
-                        class: "btn delete-button",
-                        value: id,
-                        html: label,
-                        onclick: "delete_fav_currency(this)"
-                    })
+                    let temp = createDeletableButton(id, label, "delete_fav_currency(this)")
                     $("#currency_buttons_container").append(temp)
                 }
             });
@@ -73,12 +66,7 @@
                 data: {"id": id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
                 success: function (data) {
                     $(button).remove();
-                    let temp = $('<li/>', {
-                        class: "dropdown-item currency-item",
-                        value: id,
-                        html: label,
-                        onclick: "exchange_chosen(this)"
-                    })
+                    let temp = createListItem(id, label, "exchange_chosen(this)");
                     $("#exchanges_list").append(temp)
                 }
             });
@@ -94,13 +82,7 @@
                 data: {"id": id, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
                 success: function (data) {
                     $(row).remove();
-                    let temp = $('<button/>', {
-                        type: "button",
-                        class: "btn delete-button",
-                        value: id,
-                        html: label,
-                        onclick: "delete_fav_exchange(this)"
-                    })
+                    let temp = createDeletableButton(id, label, "delete_fav_exchange(this)")
                     $("#exchange_buttons_container").append(temp)
                 }
             });

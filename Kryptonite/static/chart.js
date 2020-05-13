@@ -1,4 +1,4 @@
-var endpoint = '/api/data/'
+let endpoint = '/api/data/'
 
 let binanceChartInitialized = false;
 
@@ -12,7 +12,7 @@ class Currency {
 
 getDataContainers = function() {
     const symbols = ['BTCUSDT', 'ETHUSDT', 'LTCUSDT', 'BNBUSDT']
-    var dataContainers = []
+    let dataContainers = []
 
     symbols.forEach(function (symbol) {
         dataContainers.push(new Currency(symbol))
@@ -24,10 +24,10 @@ getDataContainers = function() {
 
 $(document).ready(function(){
 
-    var timeSpan = $("input[name='timespan']:checked").val();
+    let timeSpan = $("input[name='timespan']:checked").val();
     getData(timeSpan);
 
-    $("input[type='radio']").click(function(){
+    $("input[type='radio']").change(function(){
         timeSpan = $("input[name='timespan']:checked").val();
         if(timeSpan){
             getData(timeSpan);
@@ -37,8 +37,8 @@ $(document).ready(function(){
 
 getData = function(timeSpan) {
 
-    var interval = "5m";
-    var date_start = new Date(new Date().setDate(new Date().getDate() - 1)).toUTCString();
+    let interval = "5m";
+    let date_start = new Date(new Date().setDate(new Date().getDate() - 1)).toUTCString();
     switch(timeSpan){
         case '1d':
             break;
@@ -58,10 +58,10 @@ getData = function(timeSpan) {
 
     let dataContainers = getDataContainers();
 
-    var promises = []
+    let promises = []
 
     dataContainers.forEach(function (container) {
-        var request = $.ajax({
+        let request = $.ajax({
             method: "GET",
             url: endpoint,
             data: {
@@ -70,7 +70,7 @@ getData = function(timeSpan) {
                 date_start: date_start
             },
             success: function(data){
-                for(var i = 0; i < data.length; i++)
+                for(let i = 0; i < data.length; i++)
                 {
                     container.data.push(Number(data[i].open));
                     date = new Date(data[i].open_time);
@@ -97,7 +97,7 @@ drawChart = function(dataContainers) {
     if(binanceChartInitialized == true){
         binanceChart.destroy();
     }
-    var ctx = document.getElementById('binanceChart').getContext('2d');
+    let ctx = document.getElementById('binanceChart').getContext('2d');
     binanceChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -108,7 +108,7 @@ drawChart = function(dataContainers) {
                 fill: false,
                 borderWidth: 2,
                 pointStyle: 'line',
-                hidden: true,
+                hidden: false,
                 borderColor: 'rgba(255, 0, 0, 0.6)'
             },
             {
@@ -117,6 +117,7 @@ drawChart = function(dataContainers) {
                 fill: false,
                 borderWidth: 2,
                 pointStyle: 'line',
+                hidden: true,
                 borderColor: 'rgba(44, 130, 201, 1)'
             },
             {
@@ -125,6 +126,7 @@ drawChart = function(dataContainers) {
                 fill: false,
                 borderWidth: 2,
                 pointStyle: 'line',
+                hidden: true,
                 borderColor: 'rgba(245, 229, 27, 1)'
             },
             {
@@ -133,6 +135,7 @@ drawChart = function(dataContainers) {
                 fill: false,
                 borderWidth: 2,
                 pointStyle: 'line',
+                hidden: true,
                 borderColor: 'rgba(54, 215, 183, 1)'
             }]
         },
@@ -159,28 +162,28 @@ drawChart = function(dataContainers) {
                 }]
             }
         }
-    }); 
-
+    });
+    $('#binanceChart').css("visibility", "visible");
     binanceChartInitialized = true;
 }
 
 Date.prototype.toFormat = function(interval) {
 
-    var month_names =["Jan","Feb","Mar",
+    let month_names =["Jan","Feb","Mar",
                       "Apr","May","Jun",
                       "Jul","Aug","Sep",
                       "Oct","Nov","Dec"];
 
-    var day = this.getDate();
-    var month_index = this.getMonth();
-    var year = this.getFullYear();
+    let day = this.getDate();
+    let month_index = this.getMonth();
+    let year = this.getFullYear();
 
-    var hour = this.getHours();
-    var minutes = this.getMinutes();
+    let hour = this.getHours();
+    let minutes = this.getMinutes();
     minutes = (minutes < 10 ? "0" : "") + minutes;
-    var timeOfDay = (hour < 12) ? "AM" : "PM";
+    let timeOfDay = (hour < 12) ? "AM" : "PM";
 
-    var str = "";
+    let str = "";
 
     switch(interval){
         case "5m":
@@ -188,10 +191,11 @@ Date.prototype.toFormat = function(interval) {
             break;
         case "1h":
             str = "" + hour + ":" + minutes + " " + timeOfDay + " " + day + " " + month_names[month_index];
+            break;
         default:
             str =  "" + day + " " + month_names[month_index] + " " + year;
-
+            break;
     }
-    
+
     return str;
 }
