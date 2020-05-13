@@ -76,12 +76,8 @@ getData = function(timeSpan) {
                     date = new Date(data[i].open_time);
                     container.labels.push(date.toFormat(interval));
                 }
-
-                console.log(dataContainers);
-
             },
             error: function(error_data){
-                console.log(error_data)
             }
         });
 
