@@ -24,17 +24,17 @@ def index(request):
         return render(request, 'index.html')
 
 
-def getBinanceData(request):
+def getHistoricalBinanceData(request):
     client = BinanceClient()
     symbol = request.GET['symbol']
     interval = request.GET['interval']
     date_start = datetime.strptime(request.GET['date_start'], "%a, %d %b %Y %H:%M:%S %Z")
     data = client.GetHistoricalDataWithInterval(symbol, interval, date_start)
-    list = [{"open_time": x[0], "open": x[1]} for x in data]
-    return JsonResponse(list, safe=False)
+    li = [{"open_time": record[0], "open": record[1]} for record in data]
+    return JsonResponse(li, safe=False)
 
 
-def getPoloniexData(request):
+def getHistoricalPoloniexData(request):
     client = PoloniexClient()
     symbol = request.GET['symbol']
     interval = _map_intervals(request.GET['interval'])
