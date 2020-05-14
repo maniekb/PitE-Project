@@ -2,6 +2,7 @@ const binanceEndpoint = '/api/data/';
 const poloniexEndpoint = '/api/data/poloniex';
 
 const colors = ['rgba(255, 0, 0, 0.6)', 'rgba(44, 130, 201, 1)', 'rgba(245, 229, 27, 1)', 'rgba(54, 215, 183, 1)']
+var charts = [];
 
 class Currency {
     data = []
@@ -33,7 +34,7 @@ $(document).ready(function () {
     $("input[type='radio']").click(function () {
         timeSpan = $("input[name='timespan']:checked").val();
         if (timeSpan) {
-            fillBinanceChart(timeSpan);
+            fillCharts(timeSpan);
         }
     });
 });
@@ -87,7 +88,9 @@ fillChart = function (timeSpan, title, canvasId, endpoint, dataContainers) {
 }
 
 drawChart = function (dataContainers, title, canvasId, chartInitialized) {
+    destroyCharts()
     let ctx = document.getElementById(canvasId).getContext('2d');
+    ctx.clearRect(0, 0, ctx.width, ctx.height);
     let datasets = []
     for (let i = 0; i < dataContainers.length; ++i) {
         datasets.push({
@@ -100,7 +103,7 @@ drawChart = function (dataContainers, title, canvasId, chartInitialized) {
             borderColor: colors[i]
         })
     }
-    new Chart(ctx, {
+    charts.push(new Chart(ctx, {
         type: 'line',
         data: {
             labels: dataContainers[0].labels,
@@ -129,7 +132,7 @@ drawChart = function (dataContainers, title, canvasId, chartInitialized) {
                 }]
             }
         }
-    });
+    }));
 }
 
 function getStartDate(timeSpan) {
@@ -138,6 +141,7 @@ function getStartDate(timeSpan) {
         case '1d':
             interval = "5m";
             date_start = new Date(new Date().setDate(new Date().getDate() - 1)).toUTCString();
+            console.log(date_start)
             break;
         case '1w':
             interval = "1h";
@@ -185,4 +189,11 @@ Date.prototype.toFormat = function (interval) {
     }
 
     return str;
+}
+
+function destroyCharts() {
+    if (charts.length === 2) {
+        charts.forEach(chart => chart.destroy())
+        charts = []
+    }
 }

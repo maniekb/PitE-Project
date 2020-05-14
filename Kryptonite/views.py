@@ -10,7 +10,7 @@ from django.contrib import messages
 import sweetify
 from Kryptonite.DataService.BinanceClient import BinanceClient
 from Kryptonite.Clients.Poloniex.client import PoloniexClient
-from datetime import  datetime
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -30,17 +30,17 @@ def getBinanceData(request):
     date_start = datetime.strptime(request.GET['date_start'], "%a, %d %b %Y %H:%M:%S %Z")
     data = client.GetHistoricalDataWithInterval(symbol, interval, date_start)
     list = [{"open_time": x[0], "open": x[1]} for x in data]
-
     return JsonResponse(list, safe=False)
 
 
 def getPoloniexData(request):
     client = PoloniexClient()
     symbol = request.GET['symbol']
-    interval = request.GET['interval']
+    interval = _map_intervals(request.GET['interval'])
     date_start = datetime.strptime(request.GET['date_start'], "%a, %d %b %Y %H:%M:%S %Z")
-    date_end = datetime.now()
-    data = client.get_chart_data(symbol, date_start.timestamp(), date_end.timestamp(), 300)
+    date_start = _timestamp_gmt_to_utc(date_start.timestamp())
+    date_end = datetime.now().timestamp()
+    data = client.get_chart_data(symbol, int(date_start), int(date_end), interval)
     li = [{"open_time": record.date, "open": record.open} for record in data]
     return JsonResponse(li, safe=False)
 
@@ -179,3 +179,16 @@ def account(request):
 def arbitrage(request):
     # TODO
     return render(request, 'arbitrage.html')
+
+
+def _timestamp_gmt_to_utc(timestamp):
+    return timestamp + 7200
+
+
+def _map_intervals(interval):
+    if interval == '5m':
+        return 300
+    if interval == '1h':
+        return 1800
+    if interval in ['1d', '1y']:
+        return 86400

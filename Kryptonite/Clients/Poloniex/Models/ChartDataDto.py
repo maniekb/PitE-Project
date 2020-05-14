@@ -1,7 +1,7 @@
 class ChartDataDto:
     def __init__(self, date, high, low, open, close,
                  volume, quote_volume, weighted_average):
-        self.date = date
+        self.date = date*1000  #timestamp scaled to miliseconds
         self.high = high
         self.low = low
         self.open = open
