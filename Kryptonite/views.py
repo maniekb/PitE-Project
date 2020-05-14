@@ -8,8 +8,8 @@ from django.http import JsonResponse
 from django.http import Http404
 from django.contrib import messages
 import sweetify
-from Kryptonite.DataService.BinanceClient import BinanceClient
-from Kryptonite.Clients.Poloniex.client import PoloniexClient
+from Kryptonite.DataService.Binance.BinanceClient import BinanceClient
+from Kryptonite.DataService.Poloniex.client import PoloniexClient
 from datetime import datetime
 
 import logging

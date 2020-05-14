@@ -1,6 +1,6 @@
-from Kryptonite.Clients.base import BaseClient
-from Kryptonite.Clients.Poloniex.Models.TradeHistoryDto import to_trade_history
-from Kryptonite.Clients.Poloniex.Models.ChartDataDto import to_chart_data
+from Kryptonite.DataService.Poloniex.base import BaseClient
+from Kryptonite.DataService.Poloniex.Models.TradeHistoryDto import to_trade_history
+from Kryptonite.DataService.Poloniex.Models.ChartDataDto import to_chart_data
 from enum import Enum
 
 
