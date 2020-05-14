@@ -29,7 +29,6 @@ class PoloniexClient(BaseClient):
     def get_chart_data(self, chart_currency_pair, start, end, period=300):
         params = self.__create_params('returnChartData', chart_currency_pair, start, end, period)
         result = self.get(params)
-        print("RE: \n", result)
         data = self.__deserialize_to_chart_data(result)
         return data
 

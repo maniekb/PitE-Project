@@ -9,9 +9,8 @@ from django.http import Http404
 from django.contrib import messages
 import sweetify
 from Kryptonite.DataService.BinanceClient import BinanceClient
+from Kryptonite.Clients.Poloniex.client import PoloniexClient
 from datetime import  datetime
-import json
-
 import logging
 
 logger = logging.getLogger(__name__)
@@ -29,13 +28,21 @@ def getBinanceData(request):
     symbol = request.GET['symbol']
     interval = request.GET['interval']
     date_start = datetime.strptime(request.GET['date_start'], "%a, %d %b %Y %H:%M:%S %Z")
-    print(date_start)
     data = client.GetHistoricalDataWithInterval(symbol, interval, date_start)
     list = [{"open_time": x[0], "open": x[1]} for x in data]
 
-    json.dumps(list)
     return JsonResponse(list, safe=False)
 
+
+def getPoloniexData(request):
+    client = PoloniexClient()
+    symbol = request.GET['symbol']
+    interval = request.GET['interval']
+    date_start = datetime.strptime(request.GET['date_start'], "%a, %d %b %Y %H:%M:%S %Z")
+    date_end = datetime.now()
+    data = client.get_chart_data(symbol, date_start.timestamp(), date_end.timestamp(), 300)
+    li = [{"open_time": record.date, "open": record.open} for record in data]
+    return JsonResponse(li, safe=False)
 
 
 def register(request):

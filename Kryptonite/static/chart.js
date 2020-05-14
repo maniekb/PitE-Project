@@ -1,67 +1,65 @@
-var endpoint = '/api/data/'
+const binanceEndpoint = '/api/data/';
+const poloniexEndpoint = '/api/data/poloniex';
 
-let binanceChartInitialized = false;
+const colors = ['rgba(255, 0, 0, 0.6)', 'rgba(44, 130, 201, 1)', 'rgba(245, 229, 27, 1)', 'rgba(54, 215, 183, 1)']
 
 class Currency {
     data = []
     labels = []
-    constructor(symbol) {
+
+    constructor(symbol, label) {
         this.symbol = symbol
+        this.label = label
     }
 }
 
-getDataContainers = function() {
-    const symbols = ['BTCUSDT', 'ETHUSDT', 'LTCUSDT', 'BNBUSDT']
-    var dataContainers = []
+const binanceSymbols = [['BTCUSDT', 'BTC'], ['ETHUSDT', 'ETH'], ['LTCUSDT', 'LTC'], ['BNBUSDT', 'BNB']];
+const poloniexSymbols = [['USDT_BTC', 'BTC'], ['USDT_ETH', 'ETH'], ['USDT_LTC', 'LTC']];
 
-    symbols.forEach(function (symbol) {
-        dataContainers.push(new Currency(symbol))
-    });
-
+getDataContainers = function (symbols) {
+    let dataContainers = []
+    for (let i = 0; i < symbols.length; ++i) {
+        dataContainers.push(new Currency(symbols[i][0], symbols[i][1]))
+    }
     return dataContainers;
 }
 
 
-$(document).ready(function(){
+$(document).ready(function () {
 
-    var timeSpan = $("input[name='timespan']:checked").val();
-    getData(timeSpan);
+    let timeSpan = $("input[name='timespan']:checked").val();
+    fillCharts(timeSpan);
 
-    $("input[type='radio']").click(function(){
+    $("input[type='radio']").click(function () {
         timeSpan = $("input[name='timespan']:checked").val();
-        if(timeSpan){
-            getData(timeSpan);
+        if (timeSpan) {
+            fillBinanceChart(timeSpan);
         }
     });
 });
 
-getData = function(timeSpan) {
+function fillBinanceChart(timeSpan) {
+    let dataContainers = getDataContainers(binanceSymbols)
+    fillChart(timeSpan, 'Binance', 'binanceChart', binanceEndpoint, dataContainers)
+}
 
-    var interval = "5m";
-    var date_start = new Date(new Date().setDate(new Date().getDate() - 1)).toUTCString();
-    switch(timeSpan){
-        case '1d':
-            break;
-        case '1w':
-            interval = "1h";
-            date_start = new Date(new Date().setDate(new Date().getDate() - 7)).toUTCString();
-            break;
-        case '6m':
-            interval = "1d";
-            date_start = new Date(new Date().setMonth(new Date().getMonth() - 6)).toUTCString();
-            break;
-        case 'y':
-            interval = "1d";
-            date_start = new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toUTCString();
-            break;
-    }
+function fillPoloniexChart(timestamp) {
+    let dataContainers = getDataContainers(poloniexSymbols)
+    fillChart(timestamp, 'Poloniex', 'poloniexChart', poloniexEndpoint, dataContainers)
+}
 
-    let dataContainers = getDataContainers();
+function fillCharts(timestamp) {
+    fillBinanceChart(timestamp)
+    fillPoloniexChart(timestamp)
+}
 
-    var promises = []
+fillChart = function (timeSpan, title, canvasId, endpoint, dataContainers) {
+
+    const {interval, date_start} = getStartDate(timeSpan)
+    let promises = []
 
     dataContainers.forEach(function (container) {
-        var request = $.ajax({
+        let request = $.ajax({
             method: "GET",
             url: endpoint,
             data: {
@@ -69,77 +67,49 @@ getData = function(timeSpan) {
                 interval: interval,
                 date_start: date_start
             },
-            success: function(data){
-                for(var i = 0; i < data.length; i++)
-                {
+            success: function (data) {
+                for (let i = 0; i < data.length; i++) {
                     container.data.push(Number(data[i].open));
                     date = new Date(data[i].open_time);
                     container.labels.push(date.toFormat(interval));
                 }
-
-                console.log(dataContainers);
-
             },
-            error: function(error_data){
+            error: function (error_data) {
                 console.log(error_data)
             }
         });
-
         promises.push(request);
     });
 
-    $.when.apply(null, promises).done(function(){
-        drawChart(dataContainers);
-     })
+    $.when.apply(null, promises).done(function () {
+        drawChart(dataContainers, title, canvasId);
+    })
 }
 
-drawChart = function(dataContainers) {
-    if(binanceChartInitialized == true){
-        binanceChart.destroy();
+drawChart = function (dataContainers, title, canvasId, chartInitialized) {
+    let ctx = document.getElementById(canvasId).getContext('2d');
+    let datasets = []
+    for (let i = 0; i < dataContainers.length; ++i) {
+        datasets.push({
+            data: dataContainers[i].data,
+            label: dataContainers[i].label,
+            fill: false,
+            borderWidth: 2,
+            pointStyle: 'line',
+            hidden: i !== 0,
+            borderColor: colors[i]
+        })
     }
-    var ctx = document.getElementById('binanceChart').getContext('2d');
-    binanceChart = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'line',
         data: {
             labels: dataContainers[0].labels,
-            datasets:[{
-                data: dataContainers[0].data,
-                label: "BTC",
-                fill: false,
-                borderWidth: 2,
-                pointStyle: 'line',
-                hidden: true,
-                borderColor: 'rgba(255, 0, 0, 0.6)'
-            },
-            {
-                data: dataContainers[1].data,
-                label: "ETH",
-                fill: false,
-                borderWidth: 2,
-                pointStyle: 'line',
-                borderColor: 'rgba(44, 130, 201, 1)'
-            },
-            {
-                data: dataContainers[2].data,
-                label: "LTC",
-                fill: false,
-                borderWidth: 2,
-                pointStyle: 'line',
-                borderColor: 'rgba(245, 229, 27, 1)'
-            },
-            {
-                data: dataContainers[3].data,
-                label: "BNB",
-                fill: false,
-                borderWidth: 2,
-                pointStyle: 'line',
-                borderColor: 'rgba(54, 215, 183, 1)'
-            }]
+            datasets: datasets
         },
         options: {
             title: {
                 display: true,
-                text: 'Binance',
+                text: title,
                 fontColor: 'rgba(0, 0, 0, 0.6)',
                 fontSize: 20
             },
@@ -159,39 +129,60 @@ drawChart = function(dataContainers) {
                 }]
             }
         }
-    }); 
-
-    binanceChartInitialized = true;
+    });
 }
 
-Date.prototype.toFormat = function(interval) {
+function getStartDate(timeSpan) {
+    let interval, date_start;
+    switch (timeSpan) {
+        case '1d':
+            interval = "5m";
+            date_start = new Date(new Date().setDate(new Date().getDate() - 1)).toUTCString();
+            break;
+        case '1w':
+            interval = "1h";
+            date_start = new Date(new Date().setDate(new Date().getDate() - 7)).toUTCString();
+            break;
+        case '6m':
+            interval = "1d";
+            date_start = new Date(new Date().setMonth(new Date().getMonth() - 6)).toUTCString();
+            break;
+        case 'y':
+            interval = "1d";
+            date_start = new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toUTCString();
+            break;
+    }
+    return {interval, date_start};
+}
 
-    var month_names =["Jan","Feb","Mar",
-                      "Apr","May","Jun",
-                      "Jul","Aug","Sep",
-                      "Oct","Nov","Dec"];
+Date.prototype.toFormat = function (interval) {
 
-    var day = this.getDate();
-    var month_index = this.getMonth();
-    var year = this.getFullYear();
+    let month_names = ["Jan", "Feb", "Mar",
+        "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep",
+        "Oct", "Nov", "Dec"];
 
-    var hour = this.getHours();
-    var minutes = this.getMinutes();
+    let day = this.getDate();
+    let month_index = this.getMonth();
+    let year = this.getFullYear();
+
+    let hour = this.getHours();
+    let minutes = this.getMinutes();
     minutes = (minutes < 10 ? "0" : "") + minutes;
-    var timeOfDay = (hour < 12) ? "AM" : "PM";
+    let timeOfDay = (hour < 12) ? "AM" : "PM";
 
-    var str = "";
+    let str = "";
 
-    switch(interval){
+    switch (interval) {
         case "5m":
             str = "" + hour + ":" + minutes + " " + timeOfDay;
             break;
         case "1h":
             str = "" + hour + ":" + minutes + " " + timeOfDay + " " + day + " " + month_names[month_index];
         default:
-            str =  "" + day + " " + month_names[month_index] + " " + year;
+            str = "" + day + " " + month_names[month_index] + " " + year;
 
     }
-    
+
     return str;
 }
