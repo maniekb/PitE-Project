@@ -1,0 +1,62 @@
+.title-container {
+  display: flex;
+}
+
+.main-text {
+  top: 20%;
+  display: block;
+  left: 20%;
+}
+
+.secondary-text {
+  color: #002609;
+  font-size: 2vw;
+  margin-left: 0.5vw;
+  margin-bottom: 0.75vw;
+  align-self: flex-end;
+}
+
+.letters {
+  color: #0b2e13;
+  font-size: 4vw;
+  text-shadow: 2px 2px 6px #333;
+  animation: color-changer 16s infinite;
+  transition: color-changer ease-in-out;
+}
+
+@for $i from 1 through 36 {
+  &:nth-of-type(#{$i}) {
+    animation-delay: #{$i * 100} ms;
+  }
+}
+
+
+@keyframes color-changer {
+  33% {
+    color: #0b2e13;
+  }
+  /* #EE0BF5 cctv*/
+  66% {
+    color: #1c7430;
+  }
+  /* #00CCFF marine */
+  100% {
+    color: #0b2e13;
+  }
+  /* #66F50B radio */
+}
+
+@-webkit-keyframes color-changer {
+  33% {
+    color: #0b2e13;
+  }
+  /* #EE0BF5 cctv*/
+  66% {
+    color: #1c7430;
+  }
+  /* #00CCFF marine */
+  100% {
+    color: #0b2e13;
+  }
+  /* #66F50B radio */
+}

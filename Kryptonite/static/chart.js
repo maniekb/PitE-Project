@@ -183,6 +183,7 @@ Date.prototype.toFormat = function (interval) {
             break;
         case "1h":
             str = "" + hour + ":" + minutes + " " + timeOfDay + " " + day + " " + month_names[month_index];
+            break;
         default:
             str = "" + day + " " + month_names[month_index] + " " + year;
 

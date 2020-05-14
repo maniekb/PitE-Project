@@ -11,6 +11,8 @@ import sweetify
 from Kryptonite.DataService.BinanceClient import BinanceClient
 from Kryptonite.Clients.Poloniex.client import PoloniexClient
 from datetime import datetime
+import json
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -129,7 +131,6 @@ def add_favourite_currency(request):
         raise Http404
     else:
         curr_id = request.POST.get("id", None)
-        logger.warning(curr_id)
         fav = FavouriteCurrency(user_id=request.user.id, currency_id=curr_id)
         fav.save()
         return JsonResponse({"id": curr_id})

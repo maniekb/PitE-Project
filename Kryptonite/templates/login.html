@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
 {% block content %}
-    <div class="container col-md-4 align-content-center">
+    <div class="container col-md-4 align-content-center overflow-hidden">
         <h2>Login</h2>
         <div>
             <form method="post">
                 {% csrf_token %}
                 {% bootstrap_form form %}
-                <button class="btn btn-success" type="submit">Login</button>
+                <button class="btn btn-dark" type="submit">Login</button>
             </form>
         </div>
-        <div>
+        <div class="float-left">
             Don't have an account?
             <a href="{% url 'register' %}">Sign up now!</a>
         </div>
