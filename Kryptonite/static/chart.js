@@ -1,4 +1,4 @@
-const binanceEndpoint = '/api/data/';
+const binanceEndpoint = '/api/data/binance';
 const poloniexEndpoint = '/api/data/poloniex';
 
 const colors = ['rgba(255, 0, 0, 0.6)', 'rgba(44, 130, 201, 1)', 'rgba(245, 229, 27, 1)', 'rgba(54, 215, 183, 1)']

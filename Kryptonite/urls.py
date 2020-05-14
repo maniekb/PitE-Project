@@ -4,8 +4,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('api/data/', views.getBinanceData, name='api-data'),
-    path('api/data/poloniex', views.getPoloniexData, name='api-data-poloniex'),
+    path('api/data/binance', views.getHistoricalBinanceData, name='api-data-binance'),
+    path('api/data/poloniex', views.getHistoricalPoloniexData, name='api-data-poloniex'),
     path('register', views.register, name='register'),
     path('login', views.login_user, name='login'),
     path('logout', views.logout_user, name='logout'),
