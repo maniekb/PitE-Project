@@ -31,7 +31,7 @@ $(document).ready(function () {
     let timeSpan = $("input[name='timespan']:checked").val();
     fillCharts(timeSpan);
 
-    $("input[type='radio']").click(function () {
+    $("input[type='radio']").change(function () {
         timeSpan = $("input[name='timespan']:checked").val();
         if (timeSpan) {
             fillCharts(timeSpan);
@@ -87,7 +87,7 @@ fillChart = function (timeSpan, title, canvasId, endpoint, dataContainers) {
     })
 }
 
-drawChart = function (dataContainers, title, canvasId, chartInitialized) {
+drawChart = function (dataContainers, title, canvasId) {
     destroyCharts()
     let ctx = document.getElementById(canvasId).getContext('2d');
     ctx.clearRect(0, 0, ctx.width, ctx.height);
@@ -133,6 +133,7 @@ drawChart = function (dataContainers, title, canvasId, chartInitialized) {
             }
         }
     }));
+    document.getElementById(canvasId).style.visibility = "visible";
 }
 
 function getStartDate(timeSpan) {
@@ -141,7 +142,6 @@ function getStartDate(timeSpan) {
         case '1d':
             interval = "5m";
             date_start = new Date(new Date().setDate(new Date().getDate() - 1)).toUTCString();
-            console.log(date_start)
             break;
         case '1w':
             interval = "1h";

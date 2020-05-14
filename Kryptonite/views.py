@@ -11,7 +11,6 @@ import sweetify
 from Kryptonite.DataService.BinanceClient import BinanceClient
 from Kryptonite.Clients.Poloniex.client import PoloniexClient
 from datetime import datetime
-import json
 
 import logging
 
