@@ -17,7 +17,7 @@ class Currency {
 const binanceSymbols = [['BTCUSDT', 'BTC'], ['ETHUSDT', 'ETH'], ['LTCUSDT', 'LTC'], ['BNBUSDT', 'BNB']];
 const poloniexSymbols = [['USDT_BTC', 'BTC'], ['USDT_ETH', 'ETH'], ['USDT_LTC', 'LTC']];
 
-getDataContainers = function (symbols) {
+let getDataContainers = function (symbols) {
     let dataContainers = []
     for (let i = 0; i < symbols.length; ++i) {
         dataContainers.push(new Currency(symbols[i][0], symbols[i][1]))
@@ -41,12 +41,12 @@ $(document).ready(function () {
 
 function fillBinanceChart(timeSpan) {
     let dataContainers = getDataContainers(binanceSymbols)
-    fillChart(timeSpan, 'Binance', 'binanceChart', binanceEndpoint, dataContainers)
+    fillChart(timeSpan, 'binance', 'binanceChart', binanceEndpoint, dataContainers)
 }
 
 function fillPoloniexChart(timestamp) {
     let dataContainers = getDataContainers(poloniexSymbols)
-    fillChart(timestamp, 'Poloniex', 'poloniexChart', poloniexEndpoint, dataContainers)
+    fillChart(timestamp, 'poloniex', 'poloniexChart', poloniexEndpoint, dataContainers)
 }
 
 function fillCharts(timestamp) {

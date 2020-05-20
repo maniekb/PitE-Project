@@ -1,4 +1,4 @@
-from Kryptonite.Clients.Poloniex.client import PoloniexClient,\
+from kryptonite.dataservice.poloniex.client import PoloniexClient,\
     PoloniexCurrencyPair, PoloniexCharDataCurrencyPair
 
 # example usage PoloniexClinnet.get_currency()
