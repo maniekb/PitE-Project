@@ -15,6 +15,8 @@ If run locally, first need to use these commands in project directory: <br>
 ## Introduction
 Idea of the project is to create application which gather data from external APIs about current cryptocurrency rates. It will create charts representing these rates. Further it will be able to calculate possible arbitrage trades - making profit out of buying/selling crypto based on price differences between markets (including margin).
 
+More information about arbitrage algorithm available in `doc/algorithm_description.md`
+
 ## Technology
 We’ll use template system of Django framework to generate simple UI. As long as APIs provide historical data we won’t store any data in database - unless we find out during implementation it’s necessary.
 

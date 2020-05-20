@@ -8,9 +8,9 @@ from django.http import JsonResponse
 from django.http import Http404
 from django.contrib import messages
 import sweetify
-from Kryptonite.DataService.BinanceClient import BinanceClient
+from Kryptonite.DataService.Binance.BinanceClient import BinanceClient
+from Kryptonite.DataService.Poloniex.client import PoloniexClient
 from datetime import datetime
-import json
 
 import logging
 
@@ -24,18 +24,26 @@ def index(request):
         return render(request, 'index.html')
 
 
-def getBinanceData(request):
+def getHistoricalBinanceData(request):
     client = BinanceClient()
     symbol = request.GET['symbol']
     interval = request.GET['interval']
     date_start = datetime.strptime(request.GET['date_start'], "%a, %d %b %Y %H:%M:%S %Z")
-    print(date_start)
     data = client.GetHistoricalDataWithInterval(symbol, interval, date_start)
-    list = [{"open_time": x[0], "open": x[1]} for x in data]
+    li = [{"open_time": record[0], "open": record[1]} for record in data]
+    return JsonResponse(li, safe=False)
 
-    json.dumps(list)
-    return JsonResponse(list, safe=False)
 
+def getHistoricalPoloniexData(request):
+    client = PoloniexClient()
+    symbol = request.GET['symbol']
+    interval = _map_intervals(request.GET['interval'])
+    date_start = datetime.strptime(request.GET['date_start'], "%a, %d %b %Y %H:%M:%S %Z")
+    date_start = _timestamp_gmt_to_utc(date_start.timestamp())
+    date_end = datetime.now().timestamp()
+    data = client.get_chart_data(symbol, int(date_start), int(date_end), interval)
+    li = [{"open_time": record.date, "open": record.open} for record in data]
+    return JsonResponse(li, safe=False)
 
 
 def register(request):
@@ -171,3 +179,16 @@ def account(request):
 def arbitrage(request):
     # TODO
     return render(request, 'arbitrage.html')
+
+
+def _timestamp_gmt_to_utc(timestamp):
+    return timestamp + 7200
+
+
+def _map_intervals(interval):
+    if interval == '5m':
+        return 300
+    if interval == '1h':
+        return 1800
+    if interval in ['1d', '1y']:
+        return 86400
