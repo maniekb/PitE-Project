@@ -20,11 +20,11 @@
   color: #0b2e13;
   font-size: 4vw;
   text-shadow: 2px 2px 6px #333;
-  animation: color-changer 16s infinite;
+  animation: color-changer 12s infinite;
   transition: color-changer ease-in-out;
 }
 
-@for $i from 1 through 36 {
+@for $i from 1 through 28 {
   &:nth-of-type(#{$i}) {
     animation-delay: #{$i * 100} ms;
   }

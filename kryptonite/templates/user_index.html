@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Your Dashboard</h1>
+    <br>
+    {% if show_charts %}
+        {% for exchange in exchanges %}
+            {% include '_historical_chart.html' with exchange_value=exchange %}
+        {% endfor %}
+        {{ currencies|json_script:"currencies_data" }}
+        {{ exchanges|json_script:"exchanges_data" }}
+    {% else %}
+        <h3>Why won't you add some more favourite currencies and exchanges?</h3>
+        <h3>You can do it <a href="{% url 'favourites' %}">here</a></h3>
+    {% endif %}
+    {% load static %}
+    <script src={% static 'chart.js' %}></script>
+{% endblock %}

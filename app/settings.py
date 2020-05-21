@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
-    'Kryptonite.apps.KryptoniteConfig',
+    'kryptonite.apps.KryptoniteConfig',
     'bootstrap4',
     'sweetify'
 ]
@@ -63,7 +63,7 @@ ROOT_URLCONF = 'app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'DIRS': [os.path.join(BASE_DIR, 'kryptonite/templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {

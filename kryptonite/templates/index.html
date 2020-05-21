@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>All crypto data</h1>
+    <br>
+    {% for exchange in exchanges %}
+        {% include '_historical_chart.html' with exchange_value=exchange %}
+    {% endfor %}
+    {{ currencies|json_script:"currencies_data" }}
+    {{ exchanges|json_script:"exchanges_data" }}
+    {% load static %}
+    <script src={% static 'chart.js' %}></script>
+{% endblock %}
