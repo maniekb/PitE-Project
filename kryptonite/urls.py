@@ -12,6 +12,7 @@ urlpatterns = [
     path('arbitrage', views.arbitrage, name='arbitrage'),
     path('account', views.account, name='account'),
     path('favourites', views.favourites, name='favourites'),
+    path('all', views.all_data_page, name='all_data'),
     path('del_favourite_currency', views.del_favourite_currency, name='del_favourite_currency'),
     path('add_favourite_currency', views.add_favourite_currency, name='add_favourite_currency'),
     path('add_favourite_exchange', views.add_favourite_exchange, name='add_favourite_exchange'),

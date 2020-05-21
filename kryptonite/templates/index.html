@@ -1,24 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div>
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-dark">
-                <input type="radio" name="timespan" value="y"> Last year
-            </label>
-            <label class="btn btn-dark">
-                <input type="radio" name="timespan" value="6m"> Last 6 months</label>
-            <label class="btn btn-dark">
-                <input type="radio" name="timespan" value="1w"> Last week</label>
-            <label class="btn btn-dark active">
-                <input type="radio" name="timespan" value="1d" checked> Last day</label>
-        </div>
-    </div>
-    <div>
-        <canvas id="binanceChart" width="400" height="200"></canvas>
-    </div>
-    <div>
-        <canvas id="poloniexChart" width="400" height="200"></canvas>
-    </div>
+    <h1>All crypto data</h1>
+    <br>
+    {% for exchange in exchanges %}
+        {% include '_historical_chart.html' with exchange_value=exchange %}
+    {% endfor %}
+    {{ currencies|json_script:"currencies_data" }}
+    {{ exchanges|json_script:"exchanges_data" }}
     {% load static %}
     <script src={% static 'chart.js' %}></script>
 {% endblock %}

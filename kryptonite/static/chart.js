@@ -1,8 +1,7 @@
-const binanceEndpoint = '/api/data/binance';
-const poloniexEndpoint = '/api/data/poloniex';
+const endpoint = '/api/data/'
 
 const colors = ['rgba(255, 0, 0, 0.6)', 'rgba(44, 130, 201, 1)', 'rgba(245, 229, 27, 1)', 'rgba(54, 215, 183, 1)']
-var charts = [];
+let charts = {};
 
 class Currency {
     data = []
@@ -14,8 +13,15 @@ class Currency {
     }
 }
 
-const binanceSymbols = [['BTCUSDT', 'BTC'], ['ETHUSDT', 'ETH'], ['LTCUSDT', 'LTC'], ['BNBUSDT', 'BNB']];
-const poloniexSymbols = [['USDT_BTC', 'BTC'], ['USDT_ETH', 'ETH'], ['USDT_LTC', 'LTC']];
+const currencies_data = JSON.parse(document.getElementById('currencies_data').textContent);
+const exchanges_data = JSON.parse(document.getElementById('exchanges_data').textContent);
+
+let binanceSymbols = [];
+let poloniexSymbols = [];
+currencies_data.forEach(function (currency) {
+    binanceSymbols.push([currency['value'] + 'USDT', currency['value']]);
+    poloniexSymbols.push(['USDT_' + currency['value'], currency['value']]);
+})
 
 let getDataContainers = function (symbols) {
     let dataContainers = []
@@ -34,25 +40,32 @@ $(document).ready(function () {
     $("input[type='radio']").change(function () {
         timeSpan = $("input[name='timespan']:checked").val();
         if (timeSpan) {
-            fillCharts(timeSpan);
+            runFillChart(timeSpan, $(this).attr("class"));
         }
     });
 });
 
-function fillBinanceChart(timeSpan) {
-    let dataContainers = getDataContainers(binanceSymbols)
-    fillChart(timeSpan, 'binance', 'binanceChart', binanceEndpoint, dataContainers)
-}
+function runFillChart(timestamp, exchangeValue) {
+    let symbols;
+    if (exchangeValue === 'binance') {
+        symbols = binanceSymbols
+    } else if (exchangeValue === 'poloniex') {
+        symbols = poloniexSymbols
+    }
+    let dataContainers = getDataContainers(symbols)
+    let title = exchanges_data[exchangeValue].label
+    let canvasId = exchangeValue + 'Chart'
+    let currentEndpoint = endpoint + exchangeValue
 
-function fillPoloniexChart(timestamp) {
-    let dataContainers = getDataContainers(poloniexSymbols)
-    fillChart(timestamp, 'poloniex', 'poloniexChart', poloniexEndpoint, dataContainers)
+    fillChart(timestamp, title, canvasId, currentEndpoint, dataContainers)
 }
 
 function fillCharts(timestamp) {
-    fillBinanceChart(timestamp)
-    fillPoloniexChart(timestamp)
+    Object.keys(exchanges_data).forEach(function (exchange) {
+        runFillChart(timestamp, exchange);
+    });
 }
+
 
 fillChart = function (timeSpan, title, canvasId, endpoint, dataContainers) {
 
@@ -88,7 +101,9 @@ fillChart = function (timeSpan, title, canvasId, endpoint, dataContainers) {
 }
 
 drawChart = function (dataContainers, title, canvasId) {
-    destroyCharts()
+    if (canvasId in charts) {
+        charts[canvasId].destroy()
+    }
     let ctx = document.getElementById(canvasId).getContext('2d');
     ctx.clearRect(0, 0, ctx.width, ctx.height);
     let datasets = []
@@ -103,7 +118,7 @@ drawChart = function (dataContainers, title, canvasId) {
             borderColor: colors[i]
         })
     }
-    charts.push(new Chart(ctx, {
+    let chart = (new Chart(ctx, {
         type: 'line',
         data: {
             labels: dataContainers[0].labels,
@@ -113,12 +128,12 @@ drawChart = function (dataContainers, title, canvasId) {
             title: {
                 display: true,
                 text: title,
-                fontColor: 'rgba(0, 0, 0, 0.6)',
+                fontColor: 'whitesmoke',
                 fontSize: 20
             },
             legend: {
                 labels: {
-                    fontColor: 'rgb(255, 99, 132)',
+                    fontColor: 'whitesmoke',
                     fontSize: 15
                 }
             },
@@ -127,13 +142,20 @@ drawChart = function (dataContainers, title, canvasId) {
                     ticks: {
                         callback: function (tick, index, array) {
                             return (index % 4) ? "" : tick;
-                        }
+                        },
+                        fontColor: 'whitesmoke'
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        fontColor: 'whitesmoke'
                     }
                 }]
             }
         }
     }));
     document.getElementById(canvasId).style.visibility = "visible";
+    charts[canvasId] = chart
 }
 
 function getStartDate(timeSpan) {
@@ -190,11 +212,4 @@ Date.prototype.toFormat = function (interval) {
     }
 
     return str;
-}
-
-function destroyCharts() {
-    if (charts.length === 2) {
-        charts.forEach(chart => chart.destroy())
-        charts = []
-    }
 }

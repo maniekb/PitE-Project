@@ -2,7 +2,6 @@
 
 html, body {
     font-family: 'Fjalla One', sans-serif;
-    height: 100vh;
     margin: 0 auto;
     padding-top: 00px;
     background: #222629;
@@ -11,7 +10,7 @@ html, body {
 
 .main-container {
     background: #474B4F;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .header-content {
@@ -21,7 +20,7 @@ html, body {
 
 .main-content {
     overflow: auto;
-    height: 90vh;
+    height: 90%;
 }
 
 .dropdown-menu {
@@ -57,7 +56,7 @@ button {
 }
 
 canvas {
-    background: whitesmoke;
+    background: #222629;
     visibility: hidden;
 }
 

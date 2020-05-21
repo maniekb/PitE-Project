@@ -1,0 +1,16 @@
+<div style="padding-bottom: 10px">
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-dark">
+            <input type="radio" name="timespan" value="y" class="{{ exchange_value }}"> Last year
+        </label>
+        <label class="btn btn-dark">
+            <input type="radio" name="timespan" value="6m" class="{{ exchange_value }}"> Last 6 months</label>
+        <label class="btn btn-dark">
+            <input type="radio" name="timespan" value="1w" class="{{ exchange_value }}"> Last week</label>
+        <label class="btn btn-dark active">
+            <input type="radio" name="timespan" value="1d" checked class="{{ exchange_value }}"> Last day</label>
+    </div>
+</div>
+<div style="padding-bottom: 10px">
+    <canvas id="{{ exchange_value }}Chart" width="400" height="200"></canvas>
+</div>

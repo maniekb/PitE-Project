@@ -1,7 +1,6 @@
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.shortcuts import render, redirect
 from .models.forms import RegistrationForm
-from .models.models import Currency, FavouriteCurrency, FavouriteExchange, Exchange
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -11,6 +10,7 @@ import sweetify
 from kryptonite.dataservice.binance.binance_client import BinanceClient
 from kryptonite.dataservice.poloniex.client import PoloniexClient
 from datetime import datetime
+from .userservice.user_service import *
 
 import logging
 
@@ -19,9 +19,39 @@ logger = logging.getLogger(__name__)
 
 def index(request):
     if request.user.is_authenticated:
-        return render(request, 'user_index.html')
+        fav_exchange_values = [vars(exch) for exch in get_favourite_exchanges(request.user.id)]
+        exch_dict = {}
+        for exch in fav_exchange_values:
+            del exch['_state']
+            exch_dict[exch['value']] = exch
+        fav_currency_values = [vars(curr) for curr in get_favourite_currencies(request.user.id)]
+        for curr in fav_currency_values:
+            del curr['_state']
+        show_charts = exch_dict and fav_currency_values
+        return render(request, 'user_index.html',
+                      {'exchanges': exch_dict, 'currencies': fav_currency_values, 'show_charts': show_charts})
     else:
-        return render(request, 'index.html')
+        exchanges = [vars(exch) for exch in get_all_exchanges()]
+        exch_dict = {}
+        for exch in exchanges:
+            del exch['_state']
+            exch_dict[exch['value']] = exch
+        currencies = [vars(curr) for curr in get_all_currencies()]
+        for curr in currencies:
+            del curr['_state']
+        return render(request, 'index.html', {'exchanges': exch_dict, 'currencies': currencies})
+
+
+def all_data_page(request):
+    exchanges = [vars(exch) for exch in get_all_exchanges()]
+    exch_dict = {}
+    for exch in exchanges:
+        del exch['_state']
+        exch_dict[exch['value']] = exch
+    currencies = [vars(curr) for curr in get_all_currencies()]
+    for curr in currencies:
+        del curr['_state']
+    return render(request, 'index.html', {'exchanges': exch_dict, 'currencies': currencies})
 
 
 def get_historical_binance_data(request):
@@ -96,20 +126,16 @@ def logout_user(request):
 
 @login_required
 def favourites(request):
-    c_ids = [fav.currency_id for fav in FavouriteCurrency.objects.filter(user_id=request.user.id)]
+    all_currencies = get_all_currencies()
+    fav_currencies = get_favourite_currencies(request.user.id)
+    rest_currencies = list(set(all_currencies) - set(fav_currencies))
 
-    all_currencies = Currency.objects.all()
-    fav_curr = [curr for curr in all_currencies if curr.id in c_ids]
-    rest_curr = [curr for curr in all_currencies if curr.id not in c_ids]
-
-    e_ids = [fav.exchange_id for fav in FavouriteExchange.objects.filter(user_id=request.user.id)]
-
-    all_exchanges = Exchange.objects.all()
-    fav_exchange = [ex for ex in all_exchanges if ex.id in e_ids]
-    rest_exchange = [ex for ex in all_exchanges if ex.id not in e_ids]
+    all_exchanges = get_all_exchanges()
+    fav_exchange = get_favourite_exchanges(request.user.id)
+    rest_exchange = list(set(all_exchanges) - set(fav_exchange))
     return render(request, 'favourites.html',
-                  {'currencies': rest_curr,
-                   'curr_buttons': fav_curr,
+                  {'currencies': rest_currencies,
+                   'curr_buttons': fav_currencies,
                    "exchange_buttons": fav_exchange,
                    "exchanges": rest_exchange})
 
@@ -165,7 +191,7 @@ def account(request):
             update_session_auth_hash(request, user)  # Important!
             sweetify.success(request, title='Success', icon='success', text='You successfully changed your password',
                              timer=5000, button='Ok')
-            return redirect('/')
+            return redirect('account')
         else:
             messages.error(request, 'Please correct the error below.')
     else:
