@@ -40,7 +40,7 @@ def returnEndCount(list_rates,start_value):
 
 #main algorithm
 def algorithm(forex,start_currency,start_value,records):
-    tmp = forex["gielda"].length
+    tmp = len(forex["gielda"])
     combination = generateCombinationOfThree(tmp)
 
     for i in combination:
