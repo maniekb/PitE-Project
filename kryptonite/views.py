@@ -7,10 +7,9 @@ from django.http import JsonResponse
 from django.http import Http404
 from django.contrib import messages
 import sweetify
-from kryptonite.dataservice.binance_.binance_client import BinanceClient
-from kryptonite.dataservice.poloniex.client import PoloniexClient
 from datetime import datetime
 from .userservice.user_service import *
+from kryptonite.dataservice.chart_builder import ChartBuilder
 
 import logging
 
@@ -54,26 +53,15 @@ def all_data_page(request):
     return render(request, 'index.html', {'exchanges': exch_dict, 'currencies': currencies})
 
 
-def get_historical_binance_data(request):
-    client = BinanceClient()
+def get_historical_data(request):
+    exchange = request.GET['exchange']
     symbol = request.GET['symbol']
     interval = request.GET['interval']
     date_start = datetime.strptime(request.GET['date_start'], "%a, %d %b %Y %H:%M:%S %Z")
-    data = client.get_historical_data_with_interval(symbol, interval, date_start)
-    li = [{"open_time": record[0], "open": record[1]} for record in data]
-    return JsonResponse(li, safe=False)
-
-
-def get_historical_poloniex_data(request):
-    client = PoloniexClient()
-    symbol = request.GET['symbol']
-    interval = _map_intervals(request.GET['interval'])
-    date_start = datetime.strptime(request.GET['date_start'], "%a, %d %b %Y %H:%M:%S %Z")
-    date_start = _timestamp_gmt_to_utc(date_start.timestamp())
-    date_end = datetime.now().timestamp()
-    data = client.get_chart_data(symbol, int(date_start), int(date_end), interval)
-    li = [{"open_time": record.date, "open": record.open} for record in data]
-    return JsonResponse(li, safe=False)
+    date_end = datetime.utcnow()
+    data_builder = ChartBuilder(exchange, symbol, interval, date_start, date_end)
+    data = data_builder.get_to_dollar_data()
+    return JsonResponse(data, safe=False)
 
 
 def register(request):
@@ -209,6 +197,7 @@ def arbitrage(request):
     elif request.method == 'POST':
         form = RunArbitrageForm(request.POST)
         if form.is_valid():
+            # TODO - Usage of actual algorithm
             return render(request, 'arbitrage.html', {"show_result": True, "form": form})
         else:
             return render(request, 'arbitrage.html', {"show_result": False, "form": form})

@@ -1,32 +1,29 @@
-const endpoint = '/api/data/'
+const endpoint = '/api/data/chart'
 
-const colors = ['rgba(255, 0, 0, 0.6)', 'rgba(44, 130, 201, 1)', 'rgba(245, 229, 27, 1)', 'rgba(54, 215, 183, 1)']
+const colors = ['rgba(255, 0, 0, 0.6)', 'rgba(44, 130, 201, 1)', 'rgba(245, 229, 27, 1)',
+    'rgba(0,255,0,0.36)', 'rgba(255,111,0,0.84)', 'rgba(119,0,255,0.83)', 'rgba(54, 215, 183, 1)']
 let charts = {};
 
 class Currency {
     data = []
     labels = []
 
-    constructor(symbol, label) {
+    constructor(symbol) {
         this.symbol = symbol
-        this.label = label
     }
 }
 
 const currencies_data = JSON.parse(document.getElementById('currencies_data').textContent);
 const exchanges_data = JSON.parse(document.getElementById('exchanges_data').textContent);
-
-let binanceSymbols = [];
-let poloniexSymbols = [];
+let symbols = []
 currencies_data.forEach(function (currency) {
-    binanceSymbols.push([currency['value'] + 'USDT', currency['value']]);
-    poloniexSymbols.push(['USDT_' + currency['value'], currency['value']]);
+    symbols.push(currency['value']);
 })
 
 let getDataContainers = function (symbols) {
     let dataContainers = []
     for (let i = 0; i < symbols.length; ++i) {
-        dataContainers.push(new Currency(symbols[i][0], symbols[i][1]))
+        dataContainers.push(new Currency(symbols[i]))
     }
     return dataContainers;
 }
@@ -45,29 +42,21 @@ $(document).ready(function () {
     });
 });
 
-function runFillChart(timestamp, exchangeValue) {
-    let symbols;
-    if (exchangeValue === 'binance') {
-        symbols = binanceSymbols
-    } else if (exchangeValue === 'poloniex') {
-        symbols = poloniexSymbols
-    }
-    let dataContainers = getDataContainers(symbols)
-    let title = exchanges_data[exchangeValue].label
-    let canvasId = exchangeValue + 'Chart'
-    let currentEndpoint = endpoint + exchangeValue
-
-    fillChart(timestamp, title, canvasId, currentEndpoint, dataContainers)
-}
-
 function fillCharts(timestamp) {
     Object.keys(exchanges_data).forEach(function (exchange) {
         runFillChart(timestamp, exchange);
     });
 }
 
+function runFillChart(timestamp, exchange) {
+    let dataContainers = getDataContainers(symbols)
+    let title = exchanges_data[exchange].label
+    let canvasId = exchange + 'Chart'
+    fillChart(timestamp, title, canvasId, exchange, dataContainers)
+}
 
-fillChart = function (timeSpan, title, canvasId, endpoint, dataContainers) {
+
+fillChart = function (timeSpan, title, canvasId, exchange, dataContainers) {
 
     const {interval, date_start} = getStartDate(timeSpan)
     let promises = []
@@ -77,6 +66,7 @@ fillChart = function (timeSpan, title, canvasId, endpoint, dataContainers) {
             method: "GET",
             url: endpoint,
             data: {
+                exchange: exchange,
                 symbol: container.symbol,
                 interval: interval,
                 date_start: date_start
@@ -110,7 +100,7 @@ drawChart = function (dataContainers, title, canvasId) {
     for (let i = 0; i < dataContainers.length; ++i) {
         datasets.push({
             data: dataContainers[i].data,
-            label: dataContainers[i].label,
+            label: dataContainers[i].symbol,
             fill: false,
             borderWidth: 2,
             pointStyle: 'line',

@@ -1,4 +1,4 @@
-from kryptonite.dataservice.binance.binance_client import BinanceClient
+from kryptonite.dataservice.binance_.binance_client import BinanceClient
 from kryptonite.dataservice.poloniex.client import PoloniexClient
 
 
