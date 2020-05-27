@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.http import Http404
 from django.contrib import messages
 import sweetify
-from kryptonite.dataservice.binance.binance_client import BinanceClient
+from kryptonite.dataservice.binance_.binance_client import BinanceClient
 from kryptonite.dataservice.poloniex.client import PoloniexClient
 from datetime import datetime
 from .userservice.user_service import *
