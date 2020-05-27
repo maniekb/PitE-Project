@@ -36,7 +36,7 @@ class RunArbitrageForm(forms.Form):
         amount = cleaned_data.get("amount")
         start_date = cleaned_data.get("start_date")
         end_date = cleaned_data.get("end_date")
-        time_diff = (end_date - start_date).total_seconds() / 3600.0
+        time_diff = (end_date - start_date).total_seconds() / (3600*24)
         if start_date > end_date:
             msg = "End date must be later than start date"
             self.add_error('start_date', msg)
@@ -47,7 +47,7 @@ class RunArbitrageForm(forms.Form):
             self.add_error('end_date', msg)
             raise forms.ValidationError(msg)
         if time_diff > 1.0:
-            msg = "Time difference must be less than one hour"
+            msg = "Time difference must be less than one day"
             self.add_error('start_date', msg)
             self.add_error('end_date', msg)
             raise forms.ValidationError(msg)
