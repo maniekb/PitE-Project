@@ -8,10 +8,13 @@ class PoloniexCurrencyPair(Enum):
     BTC_ETH = 1
 
 
-class PoloniexCharDataCurrencyPair(Enum):
+class PoloniexChartDataCurrencyPair(Enum):
     USDT_BTC = 1
-    USDT_ETH = 1
-    USDT_LTC = 1
+    USDT_ETH = 2
+    USDT_LTC = 3
+    BTC_ETH = 4
+    BTC_ETC = 5
+    ETH_ETC = 6
 
 
 class PoloniexClient(BaseClient):

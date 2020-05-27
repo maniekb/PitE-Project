@@ -1,6 +1,5 @@
 import pandas as pd
 from binance.client import Client
-from datetime import datetime
 
 
 class BinanceClient:
@@ -35,3 +34,6 @@ class BinanceClient:
                                                    now.strftime("%d %b %Y %H:%M:%S"))
 
         return klines
+
+if __name__ == "__main__":
+    a = BinanceClient()
