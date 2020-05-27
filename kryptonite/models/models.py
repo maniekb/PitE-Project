@@ -20,3 +20,8 @@ class FavouriteCurrency(models.Model):
 class FavouriteExchange(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     exchange = models.ForeignKey(Exchange, on_delete=models.CASCADE)
+
+
+class TestScheduleLog(models.Model):
+    time = models.CharField(max_length=50)
+    message = models.CharField(max_length=100)

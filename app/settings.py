@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'kryptonite.apps.KryptoniteConfig',
     'bootstrap4',
+    'bootstrap_datepicker_plus',
     'sweetify'
 ]
 

@@ -16,3 +16,5 @@ python-binance==0.7.5
 numpy==1.18.4
 pandas==1.0.3
 django-compression-middleware==0.4.1
+apscheduler==3.6.3
+django-bootstrap-datepicker-plus==3.0.5

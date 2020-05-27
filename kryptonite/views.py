@@ -1,6 +1,6 @@
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.shortcuts import render, redirect
-from .models.forms import RegistrationForm
+from .models.forms import RegistrationForm, RunArbitrageForm
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -203,8 +203,15 @@ def account(request):
 
 @login_required
 def arbitrage(request):
-    # TODO
-    return render(request, 'arbitrage.html')
+    if request.method == 'GET':
+        form = RunArbitrageForm()
+        return render(request, 'arbitrage.html', {"show_result": False, "form": form})
+    elif request.method == 'POST':
+        form = RunArbitrageForm(request.POST)
+        if form.is_valid():
+            return render(request, 'arbitrage.html', {"show_result": True, "form": form})
+        else:
+            return render(request, 'arbitrage.html', {"show_result": False, "form": form})
 
 
 def _timestamp_gmt_to_utc(timestamp):
