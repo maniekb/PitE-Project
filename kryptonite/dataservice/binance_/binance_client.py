@@ -1,5 +1,6 @@
 import pandas as pd
 from binance.client import Client
+from datetime import datetime
 
 
 class BinanceClient:
@@ -27,11 +28,12 @@ class BinanceClient:
     #     ]
     # ]
 
-    def get_historical_data_with_interval(self, symbol, interval, start):
-        now = pd.to_datetime(self.client.get_klines(symbol=symbol, interval=interval)[-1][0], unit='ms')
+    def get_historical_data_with_interval(self, symbol, interval, start, end=None):
+        if end is None:
+            end = datetime.utcnow()
 
         klines = self.client.get_historical_klines(symbol, interval, start.strftime("%d %b %Y %H:%M:%S"),
-                                                   now.strftime("%d %b %Y %H:%M:%S"))
+                                                   end.strftime("%d %b %Y %H:%M:%S"))
 
         return klines
 
