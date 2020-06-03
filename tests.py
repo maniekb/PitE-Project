@@ -561,9 +561,12 @@ class TestAlgo(unittest.TestCase):
         ]}
 
         result = 1.03539
-        self.assertEqual(result,round(algorithm(data,"BTC",1,2),5))
-
-
+        fromalgo,order,date = algorithm(data,"BTC",1,2)
+        fromalgo = round(fromalgo,5)
+        self.assertEqual(result,fromalgo)
+        print(order)
+        print(generateCombinationOfThree(3))
+        print(date)
 
 
 if __name__ == '__main__':

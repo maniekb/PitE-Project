@@ -1,6 +1,6 @@
 import numpy as np
 import json
-
+from itertools import permutations
 
 data = {
     "name":[2,4,5,6]
@@ -9,7 +9,9 @@ print(data["name"][2])
 
 #generate combination of triangular
 def generateCombinationOfThree(tocombinate):
-    tmp = [[0,1,2],[0,2,1]]
+    #tmp = [[0,1,2],[0,2,1]]
+    a = [_ for _ in range(tocombinate)]
+    tmp = list(permutations(a,3))
     return tmp
 
 #returns element from "data" for "currency"
@@ -29,6 +31,10 @@ def returnSpecyficCurrenciesInTrades(data,ffrom,to):
 def returnSpecyficRecord(data,record):
     return data["records"][record]["rate"]
 
+def returnSpecyficRecordDate(data,record):
+    return data["records"][record]["date"]
+
+
 #returns value after changing 
 def returnEndCount(list_rates,start_value):
     val = start_value
@@ -38,14 +44,16 @@ def returnEndCount(list_rates,start_value):
     return val
         
 
-#main algorithm
+#main algorithm forex = data, records - value of rates
 def algorithm(forex,start_currency,start_value,records):
     tmp = len(forex["gielda"])
     combination = generateCombinationOfThree(tmp)
-
+    orderforex = []
+    max_value = 0
+    date = []
     for i in combination:
         valuestart = start_value
-        max_value = 0
+        
         temporary_max = 0
         g1 = forex["gielda"][ i[0] ]
         g2 = forex["gielda"][ i[1] ]
@@ -68,8 +76,11 @@ def algorithm(forex,start_currency,start_value,records):
                     list_rates.append(returnSpecyficRecord(change_to_ong3,rec))
 
                     temporary_max = returnEndCount(list_rates,start_value)
-                    max_value = max(temporary_max,max_value)
-
+                    if temporary_max >= max_value:
+                        max_value = temporary_max
+                        orderforex.append([g1["nazwa"],g2["nazwa"],g3["nazwa"]])
+                        date.append([returnSpecyficRecordDate(change_to_ong1,rec)])
+    return max_value,orderforex,date
                     
 
 
