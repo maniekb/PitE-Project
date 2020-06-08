@@ -9,6 +9,7 @@ from django.contrib import messages
 import sweetify
 from kryptonite.dataservice.binance.binance_client import BinanceClient
 from kryptonite.dataservice.poloniex.client import PoloniexClient
+from kryptonite.dataservice.bitmex.bitmex_client import BitmexClient
 from datetime import datetime
 from .userservice.user_service import *
 
@@ -75,6 +76,14 @@ def get_historical_poloniex_data(request):
     li = [{"open_time": record.date, "open": record.open} for record in data]
     return JsonResponse(li, safe=False)
 
+def get_historical_bitmex_data(request):
+    client = BitmexClient()
+    symbol = request.GET['symbol']
+    interval = request.GET['interval']
+    date_start = datetime.strptime(request.GET['date_start'], "%a, %d %b %Y %H:%M:%S %Z")
+    data = client.get_historical_data_with_interval(symbol, interval, date_start)
+    li = [{"open_time": record[0], "open": record[2]} for record in data]
+    return JsonResponse(li, safe=False)
 
 def register(request):
     if request.method == 'POST':
