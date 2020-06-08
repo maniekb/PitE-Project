@@ -3,7 +3,7 @@ import json
 from algo import *
 
 class TestAlgo(unittest.TestCase):
-    def testreturnSpecyficCurrencyFromData(self):
+    def testreturn_specyfic_currency_from_data(self):
         data = {
             "nazwa":"gielda1",
             "currencies":["BTC","ETH","LTG"],
@@ -92,10 +92,10 @@ class TestAlgo(unittest.TestCase):
                     ]
 
                 } 
-        self.assertEqual(result,returnSpecyficCurrencyFromData(data,"ETH"))
-        self.assertEqual(result2,returnSpecyficCurrencyFromData(data,"BTC"))
+        self.assertEqual(result,return_specyfic_currency_from_data(data,"ETH"))
+        self.assertEqual(result2,return_specyfic_currency_from_data(data,"BTC"))
 
-    def testreturnSpecyficCurrenciesInTrades(self):
+    def testreturn_specyfic_currecies_in_trades(self):
         data = {
             "nazwa":"poloniex",
             "currencies":["BTC","ETH","LTG"],
@@ -188,9 +188,9 @@ class TestAlgo(unittest.TestCase):
                                 }
                             ]
                         }
-        self.assertEqual(result,returnSpecyficCurrenciesInTrades(data,"BTC","LTG"))
+        self.assertEqual(result,return_specyfic_currecies_in_trades(data,"BTC","LTG"))
 
-    def testreturnSpecyficRecord(self):
+    def testreturn_specyfic_record(self):
         data = {
                             "change_to":"LTG",
                             "records":[
@@ -215,7 +215,7 @@ class TestAlgo(unittest.TestCase):
                         }
         record = 2
         result = 5
-        self.assertEqual(result,returnSpecyficRecord(data,record))
+        self.assertEqual(result,return_specyfic_record(data,record))
 
     def testalgorithm(self):
         data = {
@@ -565,7 +565,7 @@ class TestAlgo(unittest.TestCase):
         fromalgo = round(fromalgo,5)
         self.assertEqual(result,fromalgo)
         print(order)
-        print(generateCombinationOfThree(3))
+        print(generate_combination_of_three(3))
         print(date)
 
 
