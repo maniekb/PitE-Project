@@ -73,8 +73,8 @@ fillChart = function (timeSpan, title, canvasId, exchange, dataContainers) {
             },
             success: function (data) {
                 for (let i = 0; i < data.length; i++) {
-                    container.data.push(Number(data[i].open));
                     date = new Date(data[i].open_time);
+                    container.data.push({'t': date, 'y': Number(data[i].open)});
                     container.labels.push(date.toFormat(interval));
                 }
             },
