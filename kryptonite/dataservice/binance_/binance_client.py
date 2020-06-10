@@ -1,6 +1,6 @@
-import pandas as pd
-from binance.client import Client
 from datetime import datetime
+
+from binance.client import Client
 
 
 class BinanceClient:
@@ -34,8 +34,41 @@ class BinanceClient:
 
         klines = self.client.get_historical_klines(symbol, interval, start.strftime("%d %b %Y %H:%M:%S"),
                                                    end.strftime("%d %b %Y %H:%M:%S"))
-
         return klines
+
+    def get_algorithm_data(self, symbol, interval, start, end):
+        milis = self._get_milis_from_interval(interval)
+        data = self.get_historical_data_with_interval(symbol, interval, start, end)
+        data = self._approximate_missing_intervals(data, start, end, milis)
+        return data
+
+    def _approximate_missing_intervals(self, data, start, end, interval_milis):
+        start = (start.timestamp() + 7200) * 1000
+        end = (end.timestamp() + 7200) * 1000
+        new_data = [dat.copy() for dat in data]
+        current = start
+        i = 0
+        while new_data and current <= end:
+            if not i < len(new_data):
+                elem = new_data[i - 1].copy()
+                elem[0] = current
+                new_data.append(elem)
+            elif new_data[i][0] != current:
+                elem = new_data[i].copy()
+                elem[0] = current
+                new_data.insert(i, elem)
+            current += interval_milis
+            i += 1
+        return new_data
+
+    def _get_milis_from_interval(self, interval):
+        if interval[-1] == 'm':
+            return int(interval[:-1]) * 60 * 1000
+        elif interval[-1] == 'h':
+            return int(interval[:-1]) * 60 * 60 * 1000
+        elif interval[-1] == 'd':
+            return int(interval[:-1]) * 60 * 60 * 24 * 1000
+
 
 if __name__ == "__main__":
     a = BinanceClient()

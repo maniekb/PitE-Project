@@ -1,7 +1,9 @@
-from kryptonite.dataservice.poloniex.base import BaseClient
-from kryptonite.dataservice.poloniex.models.TradeHistoryDto import to_trade_history
-from kryptonite.dataservice.poloniex.models.ChartDataDto import to_chart_data
+import copy
 from enum import Enum
+
+from kryptonite.dataservice.poloniex.base import BaseClient
+from kryptonite.dataservice.poloniex.models.ChartDataDto import to_chart_data
+from kryptonite.dataservice.poloniex.models.TradeHistoryDto import to_trade_history
 
 
 class PoloniexCurrencyPair(Enum):
@@ -35,6 +37,11 @@ class PoloniexClient(BaseClient):
         data = self.__deserialize_to_chart_data(result)
         return data
 
+    def get_algo_data(self, chart_currency_pair, start, end, period=300):
+        data = self.get_chart_data(chart_currency_pair, start, end, period)
+        data = self.__approximate_missing_intervals(data, start * 1000, end * 1000, period * 1000)
+        return data
+
     def __create_params(self, command, currency_pair, start, end, period=None):
         params_dict = {'command': command, 'currencyPair': currency_pair, 'start': start, 'end': end, 'period': period}
         return params_dict
@@ -50,3 +57,22 @@ class PoloniexClient(BaseClient):
         for item in li:
             result.append(to_chart_data(item))
         return result
+
+    def __approximate_missing_intervals(self, data, start, end, interval_milis):
+        new_data = [copy.copy(dat) for dat in data]
+        current = start
+        i = 0
+        while new_data and current <= end:
+            if new_data[0].date == 0:
+                return []
+            if not i < len(new_data):
+                elem = copy.copy(new_data[i - 1])
+                elem.date = current
+                new_data.append(elem)
+            elif new_data[i].date != current:
+                elem = copy.copy(new_data[i])
+                elem.date = current
+                new_data.insert(i, elem)
+            current += interval_milis
+            i += 1
+        return new_data
