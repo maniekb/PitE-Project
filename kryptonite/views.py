@@ -1,17 +1,21 @@
-from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
-from django.shortcuts import render, redirect
-from .models.forms import RegistrationForm, RunArbitrageForm
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.http import Http404
-from django.contrib import messages
-import sweetify
-from datetime import datetime
-from .userservice.user_service import *
-from kryptonite.dataservice.chart_builder import ChartBuilder
-
 import logging
+import traceback
+from datetime import datetime
+
+import sweetify
+from django.contrib import messages
+from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.http import Http404
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+
+from kryptonite.dataservice.chart_builder import ChartBuilder
+from .algo.algo import run_algorithm
+from .dataservice.data_builder import AlgorithmDataBuilder
+from .models.forms import RegistrationForm, RunArbitrageForm
+from .userservice.user_service import *
 
 logger = logging.getLogger(__name__)
 
@@ -197,8 +201,18 @@ def arbitrage(request):
     elif request.method == 'POST':
         form = RunArbitrageForm(request.POST)
         if form.is_valid():
-            # TODO - Usage of actual algorithm
-            return render(request, 'arbitrage.html', {"show_result": True, "form": form})
+            start = form.cleaned_data.get("start_date").timestamp()
+            end = form.cleaned_data.get("end_date").timestamp()
+            start_currency = form.cleaned_data.get("start_currency")
+            amount = form.cleaned_data.get("amount")
+            data_builder = AlgorithmDataBuilder()
+            data = data_builder.get_data(start, end)
+            try:
+                result = run_algorithm(data, start_currency, float(amount))
+            except Exception as err:
+                print("Crash in algorithm!!!\n{}".format(traceback.format_exc()))
+                result = {}
+            return render(request, 'arbitrage.html', {"show_result": True, "form": form, "result": result})
         else:
             return render(request, 'arbitrage.html', {"show_result": False, "form": form})
 

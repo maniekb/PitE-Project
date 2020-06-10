@@ -1,9 +1,12 @@
-from django import forms
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from bootstrap_datepicker_plus import DateTimePickerInput
 from datetime import datetime
+
 import pytz
+from bootstrap_datepicker_plus import DateTimePickerInput
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+from kryptonite.userservice.user_service import get_all_currencies
 
 
 class RegistrationForm(UserCreationForm):
@@ -27,16 +30,17 @@ class RegistrationForm(UserCreationForm):
 
 
 class RunArbitrageForm(forms.Form):
-    amount = forms.DecimalField(label='Money amount', min_value=0.01, decimal_places=2)
-    start_date = forms.DateTimeField(label='Search start time', widget=DateTimePickerInput())
-    end_date = forms.DateTimeField(label='Search end time', widget=DateTimePickerInput())
+    start_currency = forms.ChoiceField(choices=[(currency.value, currency.value) for currency in get_all_currencies()])
+    amount = forms.DecimalField(label='Currency amount', min_value=0.01, decimal_places=2)
+    start_date = forms.DateTimeField(label='Search start time', input_formats=["%d/%m/%Y %H:%M"], widget=DateTimePickerInput(format="%d/%m/%Y %H:%M"))
+    end_date = forms.DateTimeField(label='Search end time', input_formats=["%d/%m/%Y %H:%M"], widget=DateTimePickerInput(format="%d/%m/%Y %H:%M"))
 
     def clean(self):
         cleaned_data = super().clean()
         amount = cleaned_data.get("amount")
         start_date = cleaned_data.get("start_date")
         end_date = cleaned_data.get("end_date")
-        time_diff = (end_date - start_date).total_seconds() / (3600*24)
+        time_diff = (end_date - start_date).total_seconds() / (3600 * 24)
         if start_date > end_date:
             msg = "End date must be later than start date"
             self.add_error('start_date', msg)
@@ -47,7 +51,7 @@ class RunArbitrageForm(forms.Form):
             self.add_error('end_date', msg)
             raise forms.ValidationError(msg)
         if time_diff > 1.0:
-            msg = "Time difference must be less than one day"
+            msg = "Time difference must by at most one day"
             self.add_error('start_date', msg)
             self.add_error('end_date', msg)
             raise forms.ValidationError(msg)
