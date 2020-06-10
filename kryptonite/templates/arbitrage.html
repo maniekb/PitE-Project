@@ -3,7 +3,7 @@
     <div class="container">
         <div>
             <h1>
-                Virtual Arbitrage (form not connected to logic)
+                Virtual Arbitrage
             </h1>
         </div>
         <div class="row">
@@ -20,11 +20,77 @@
         {% if show_result %}
             <div class="row">
                 <h3>Arbitrage result:</h3>
+            </div>
+            <div>
                 <div class="results">
-
+                    <br>
+                    {% if result %}
+                        <h4>Started with: {{ result.start_value }}</h4>
+                        <h4>Ended with: {{ result.value }}</h4>
+                        <br>
+                        <table class="results-table">
+                            <tr>
+                                <td>Starting currency</td>
+                                <td></td>
+                                <td>{{ result.exchanges.0 }}</td>
+                                <td></td>
+                                <td>{{ result.exchanges.1 }}</td>
+                                <td></td>
+                                <td>{{ result.exchanges.2 }}</td>
+                            </tr>
+                            <tr class="arrow">
+                                <td></td>
+                                <td>{{ result.rates.0 }}</td>
+                                <td></td>
+                                <td>{{ result.rates.1 }}</td>
+                                <td></td>
+                                <td>{{ result.rates.2 }}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>{{ result.start_currency }}</td>
+                                <td>&#8594;</td>
+                                <td>{{ result.currencies.0 }}</td>
+                                <td>&#8594;</td>
+                                <td>{{ result.currencies.1 }}</td>
+                                <td>&#8594;</td>
+                                <td>{{ result.currencies.2 }}</td>
+                            </tr>
+                        </table>
+                    {% else %}
+                        <h3>Could not find any profitable transaction</h3>
+                    {% endif %}
                 </div>
             </div>
         {% endif %}
     </div>
     {{ form.media }}
+
+    <script>
+        $(function () {
+            $('form').on('submit', function (e) {
+                $('body').append('<div id="loading"></div>')
+                Swal.fire({
+                    title: 'Running arbitrage',
+                    html: 'Loading data, it might take a while.',
+                    allowOutsideClick: false,
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    }
+                })
+            });
+
+        })
+    </script>
+    <style>
+        .results-table {
+            font-size: 200%;
+            text-align: center;
+        }
+
+        .arrow {
+            font-size: 50%;
+        }
+
+    </style>
 {% endblock %}
