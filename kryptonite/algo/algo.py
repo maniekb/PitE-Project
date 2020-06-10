@@ -6,7 +6,7 @@ def run_algorithm(data, start_symbol, amount):
     number = len(data.__dict__()["gielda"][0]["data"][0]["trades"][0]["records"])
     result = algorithm(data.__dict__(), start_symbol, amount, number)
     if result:
-        result["time"] = datetime.fromtimestamp(result["time"] / 1000 - 7200)
+        result["time"] = datetime.fromtimestamp(result["time"] / 1000 - 7200).strftime("%d/%m/%Y %H:%M:%S")
     return result
 
 
