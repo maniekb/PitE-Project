@@ -34,6 +34,7 @@ class RunArbitrageForm(forms.Form):
     amount = forms.DecimalField(label='Currency amount', min_value=0.01, decimal_places=2)
     start_date = forms.DateTimeField(label='Search start time', input_formats=["%d/%m/%Y %H:%M"], widget=DateTimePickerInput(format="%d/%m/%Y %H:%M"))
     end_date = forms.DateTimeField(label='Search end time', input_formats=["%d/%m/%Y %H:%M"], widget=DateTimePickerInput(format="%d/%m/%Y %H:%M"))
+    include_margin = forms.BooleanField(label='Include margin', required=False)
 
     def clean(self):
         cleaned_data = super().clean()

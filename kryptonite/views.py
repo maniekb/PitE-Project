@@ -205,10 +205,11 @@ def arbitrage(request):
             end = form.cleaned_data.get("end_date").timestamp()
             start_currency = form.cleaned_data.get("start_currency")
             amount = form.cleaned_data.get("amount")
+            include_margin = form.cleaned_data.get("include_margin")
             data_builder = AlgorithmDataBuilder()
             data = data_builder.get_data(start, end)
             try:
-                result = run_algorithm(data, start_currency, float(amount))
+                result = run_algorithm(data, start_currency, float(amount), include_margin)
             except Exception as err:
                 print("Crash in algorithm!!!\n{}".format(traceback.format_exc()))
                 result = {}
