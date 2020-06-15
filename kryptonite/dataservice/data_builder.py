@@ -3,6 +3,7 @@ from datetime import datetime
 from kryptonite.dataservice.binance_.binance_client import BinanceClient
 from kryptonite.dataservice.bitfinex.bitfinex_client import BitfinexClient
 from kryptonite.dataservice.poloniex.client import PoloniexClient, PoloniexChartDataCurrencyPair as PolCurrPair
+from kryptonite.models.models import Exchange as ExchangeModel
 
 
 class AlgorithmData:
@@ -12,11 +13,11 @@ class AlgorithmData:
         self.items = exchanges
 
     def __dict__(self):
-        return {"gielda": [item.__dict__() for item in self.items]}
+        return {"exchanges": [item.__dict__() for item in self.items]}
 
 
 class Exchange:
-    def __init__(self, name, currencies=None, data=None):
+    def __init__(self, name, currencies=None, data=None, transaction_fee=None):
         if data is None:
             data = []
         if currencies is None:
@@ -24,9 +25,11 @@ class Exchange:
         self.name = name
         self.currencies = currencies
         self.data = data
+        self.transaction_fee = transaction_fee
 
     def __dict__(self):
-        return {"nazwa": self.name, "currencies": self.currencies, "data": [dat.__dict__() for dat in self.data]}
+        return {"name": self.name, "transaction_fee": self.transaction_fee, "currencies": self.currencies,
+                "data": [dat.__dict__() for dat in self.data]}
 
 
 class ExchangeData:
@@ -84,7 +87,8 @@ class AlgorithmDataBuilder:
         return start - diff, end - diff
 
     def __get_poloniex_data(self, start, end):
-        poloniex_data = Exchange("poloniex")
+        fee = (ExchangeModel.objects.filter(value='poloniex').first()).transaction_fee
+        poloniex_data = Exchange("poloniex", transaction_fee=fee)
         poloniex_data.currencies.extend(["BTC", "ETH", "ETC"])
         pairs = [PolCurrPair.BTC_ETC, PolCurrPair.BTC_ETH, PolCurrPair.ETH_ETC]
         poloniex_data.data = self.__get_poloniex_currency_data(start, end, poloniex_data.currencies, pairs)
@@ -116,7 +120,8 @@ class AlgorithmDataBuilder:
         return records
 
     def __get_binance_data(self, start, end):
-        binance_data = Exchange("binance")
+        fee = (ExchangeModel.objects.filter(value='binance').first()).transaction_fee
+        binance_data = Exchange("binance", transaction_fee=fee)
         binance_data.currencies.extend(["BTC", "ETH", "ETC"])
         pairs = [["ETC", "BTC"], ["ETH", "BTC"], ["ETC", "ETH"]]
         binance_data.data = self.__get_binance_currency_data(start, end, binance_data.currencies, pairs)
@@ -148,7 +153,8 @@ class AlgorithmDataBuilder:
         return records
 
     def __get_bitfinex_data(self, start, end):
-        bitfinex_data = Exchange("bitfinex")
+        fee = (ExchangeModel.objects.filter(value='binance').first()).transaction_fee
+        bitfinex_data = Exchange("bitfinex", transaction_fee=fee)
         bitfinex_data.currencies.extend(["BTC", "ETH", "ETC", "LTC"])
         pairs = [["ETH", "BTC"], ["ETC", "BTC"], ["LTC", "BTC"]]
         bitfinex_data.data = self.__get_bitfinex_currency_data(start, end, bitfinex_data.currencies, pairs)

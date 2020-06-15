@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class Currency(models.Model):
@@ -10,6 +10,7 @@ class Currency(models.Model):
 class Exchange(models.Model):
     label = models.CharField(max_length=30)
     value = models.CharField(max_length=30)
+    transaction_fee = models.FloatField()
 
 
 class FavouriteCurrency(models.Model):

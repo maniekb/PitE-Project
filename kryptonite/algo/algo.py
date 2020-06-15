@@ -2,27 +2,26 @@ from datetime import datetime
 from itertools import permutations
 
 
-def run_algorithm(data, start_symbol, amount):
-    number = len(data.__dict__()["gielda"][0]["data"][0]["trades"][0]["records"])
-    result = algorithm(data.__dict__(), start_symbol, amount, number)
+def run_algorithm(data, start_symbol, amount, include_fees=False):
+    number = len(data.__dict__()["exchanges"][0]["data"][0]["trades"][0]["records"])
+    result = algorithm(data.__dict__(), start_symbol, amount, number, include_fees)
     if result:
         result["time"] = datetime.fromtimestamp(result["time"] / 1000 - 7200).strftime("%d/%m/%Y %H:%M:%S")
     return result
 
 
 # main algorithm forex = data, records - number of rates
-def algorithm(forex, start_currency, start_value, records):
-    tmp = len(forex["gielda"])
+def algorithm(forex, start_currency, start_value, records, include_fees=False):
+    tmp = len(forex["exchanges"])
     combination = generate_combination_of_three(tmp)
-    max_value = 0
+    max_value = start_value
     result = {}
     for i in combination:
-        value_start = start_value
 
-        temporary_max = 0
-        g1 = forex["gielda"][i[0]]
-        g2 = forex["gielda"][i[1]]
-        g3 = forex["gielda"][i[2]]
+        fees = None
+        g1 = forex["exchanges"][i[0]]
+        g2 = forex["exchanges"][i[1]]
+        g3 = forex["exchanges"][i[2]]
 
         currencies_g1 = return_specific_currency_from_data(g1, start_currency)
         if currencies_g1 is None:
@@ -44,7 +43,9 @@ def algorithm(forex, start_currency, start_value, records):
                                   return_specific_record(change_to_ong3, rec)]
                     if None in list_rates:
                         continue
-                    temporary_max = return_end_count(list_rates, start_value)
+                    if include_fees:
+                        fees = [g1["transaction_fee"], g2["transaction_fee"], g3["transaction_fee"]]
+                    temporary_max = return_end_count(list_rates, start_value, fees)
                     if temporary_max >= max_value:
                         max_value = temporary_max
 
@@ -52,7 +53,8 @@ def algorithm(forex, start_currency, start_value, records):
                             "start_currency": start_currency,
                             "start_value": start_value,
                             "value": max_value,
-                            "exchanges": [g1["nazwa"], g2["nazwa"], g3["nazwa"]],
+                            "exchanges": [g1["name"], g2["name"], g3["name"]],
+                            "fees": fees,
                             "currencies": [change_to_ong1["change_to"],
                                            change_to_ong2["change_to"],
                                            change_to_ong3["change_to"]],
@@ -96,11 +98,16 @@ def return_specific_record(data, record):
 
 
 # returns value after changing
-def return_end_count(list_rates, start_value):
+def return_end_count(list_rates, start_value, fees=None):
     val = start_value
-    val *= list_rates[0]
-    val *= list_rates[1]
-    val *= list_rates[2]
+    if fees:
+        val = val * list_rates[0] * (1.0 - fees[0])
+        val = val * list_rates[1] * (1.0 - fees[1])
+        val = val * list_rates[2] * (1.0 - fees[2])
+    else:
+        val *= list_rates[0]
+        val *= list_rates[1]
+        val *= list_rates[2]
     return val
 
 
