@@ -3,7 +3,7 @@ from itertools import permutations
 
 
 def run_algorithm(data, start_symbol, amount, include_fees=False):
-    number = len(data.__dict__()["gielda"][0]["data"][0]["trades"][0]["records"])
+    number = len(data.__dict__()["exchanges"][0]["data"][0]["trades"][0]["records"])
     result = algorithm(data.__dict__(), start_symbol, amount, number, include_fees)
     if result:
         result["time"] = datetime.fromtimestamp(result["time"] / 1000 - 7200).strftime("%d/%m/%Y %H:%M:%S")
@@ -12,18 +12,16 @@ def run_algorithm(data, start_symbol, amount, include_fees=False):
 
 # main algorithm forex = data, records - number of rates
 def algorithm(forex, start_currency, start_value, records, include_fees=False):
-    tmp = len(forex["gielda"])
+    tmp = len(forex["exchanges"])
     combination = generate_combination_of_three(tmp)
     max_value = start_value
     result = {}
     for i in combination:
-        value_start = start_value
 
-        temporary_max = 0
         fees = None
-        g1 = forex["gielda"][i[0]]
-        g2 = forex["gielda"][i[1]]
-        g3 = forex["gielda"][i[2]]
+        g1 = forex["exchanges"][i[0]]
+        g2 = forex["exchanges"][i[1]]
+        g3 = forex["exchanges"][i[2]]
 
         currencies_g1 = return_specific_currency_from_data(g1, start_currency)
         if currencies_g1 is None:
@@ -55,7 +53,7 @@ def algorithm(forex, start_currency, start_value, records, include_fees=False):
                             "start_currency": start_currency,
                             "start_value": start_value,
                             "value": max_value,
-                            "exchanges": [g1["nazwa"], g2["nazwa"], g3["nazwa"]],
+                            "exchanges": [g1["name"], g2["name"], g3["name"]],
                             "fees": fees,
                             "currencies": [change_to_ong1["change_to"],
                                            change_to_ong2["change_to"],

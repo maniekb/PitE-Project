@@ -13,7 +13,7 @@ class AlgorithmData:
         self.items = exchanges
 
     def __dict__(self):
-        return {"gielda": [item.__dict__() for item in self.items]}
+        return {"exchanges": [item.__dict__() for item in self.items]}
 
 
 class Exchange:
@@ -28,7 +28,7 @@ class Exchange:
         self.transaction_fee = transaction_fee
 
     def __dict__(self):
-        return {"nazwa": self.name, "transaction_fee": self.transaction_fee, "currencies": self.currencies,
+        return {"name": self.name, "transaction_fee": self.transaction_fee, "currencies": self.currencies,
                 "data": [dat.__dict__() for dat in self.data]}
 
 
