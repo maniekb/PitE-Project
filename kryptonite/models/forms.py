@@ -57,3 +57,4 @@ class RunArbitrageForm(forms.Form):
             self.add_error('start_date', msg)
             self.add_error('end_date', msg)
             raise forms.ValidationError(msg)
+        return self.cleaned_data

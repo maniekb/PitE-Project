@@ -208,12 +208,15 @@ def arbitrage(request):
             amount = form.cleaned_data.get("amount")
             include_margin = form.cleaned_data.get("include_margin")
             data_builder = AlgorithmDataBuilder()
+            print("JEDZIEMY Z KURWAMI: ", datetime.now())
             data = data_builder.get_data(start, end)
+            print("MAMY KURWA DATE: ", datetime.now())
             try:
                 result = run_algorithm(data, start_currency, float(amount), include_margin)
             except Exception as err:
                 print("Crash in algorithm!!!\n{}".format(traceback.format_exc()))
                 result = {}
+            print("KONIEC ALGO: ", datetime.now())
             return render(request, 'arbitrage.html', {"show_result": True, "form": form, "result": result})
         else:
             return render(request, 'arbitrage.html', {"show_result": False, "form": form})

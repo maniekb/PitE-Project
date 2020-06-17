@@ -1,4 +1,3 @@
-# from kryptonite.models.models import Exchange as ExchangeModel
 import calendar
 from datetime import datetime
 
@@ -6,6 +5,7 @@ from kryptonite.dataservice.binance_.binance_client import BinanceClient
 from kryptonite.dataservice.bitfinex.bitfinex_client import BitfinexClient
 from kryptonite.dataservice.bittrex.bittrex_client import BittrexClient
 from kryptonite.dataservice.poloniex.client import PoloniexClient, PoloniexChartDataCurrencyPair as PolCurrPair
+from kryptonite.models.models import Exchange as ExchangeModel
 
 
 class AlgorithmData:
@@ -91,11 +91,11 @@ class AlgorithmDataBuilder:
         return start - diff, end - diff
 
     def __get_poloniex_data(self, start, end):
-        # fee = (ExchangeModel.objects.filter(value='poloniex').first()).transaction_fee
-        fee = None
+        fee = (ExchangeModel.objects.filter(value='poloniex').first()).transaction_fee
         poloniex_data = Exchange("poloniex", transaction_fee=fee)
-        poloniex_data.currencies.extend(["BTC", "ETH", "ETC"])
-        pairs = [PolCurrPair.BTC_ETC, PolCurrPair.BTC_ETH, PolCurrPair.ETH_ETC]
+        poloniex_data.currencies.extend(["BTC", "ETH", "ETC", "XRP", "LTC", "TRX"])
+        pairs = [PolCurrPair.BTC_ETC, PolCurrPair.BTC_ETH, PolCurrPair.BTC_XRP, PolCurrPair.BTC_TRX,
+                 PolCurrPair.BTC_LTC, PolCurrPair.ETH_ETC, PolCurrPair.TRX_ETH, PolCurrPair.TRX_XRP]
         poloniex_data.data = self.__get_poloniex_currency_data(start, end, poloniex_data.currencies, pairs)
         return poloniex_data
 
@@ -125,11 +125,11 @@ class AlgorithmDataBuilder:
         return records
 
     def __get_binance_data(self, start, end):
-        # fee = (ExchangeModel.objects.filter(value='binance').first()).transaction_fee
-        fee = None
+        fee = (ExchangeModel.objects.filter(value='binance').first()).transaction_fee
         binance_data = Exchange("binance", transaction_fee=fee)
-        binance_data.currencies.extend(["BTC", "ETH", "ETC"])
-        pairs = [["ETC", "BTC"], ["ETH", "BTC"], ["ETC", "ETH"]]
+        binance_data.currencies.extend(["BTC", "ETH", "ETC", "TRX", "XRP", "LTC"])
+        pairs = [["ETC", "BTC"], ["ETH", "BTC"], ["LTC", "BTC"], ["TRX", "BTC"], ["XRP", "BTC"], ["LTC", "ETH"],
+                 ["TRX", "ETH"], ["TRX", "XRP"], ["XRP", "ETH"], ["ETC", "ETH"]]
         binance_data.data = self.__get_binance_currency_data(start, end, binance_data.currencies, pairs)
         return binance_data
 
@@ -159,11 +159,10 @@ class AlgorithmDataBuilder:
         return records
 
     def __get_bitfinex_data(self, start, end):
-        # fee = (ExchangeModel.objects.filter(value='bitfinex').first()).transaction_fee
-        fee = None
+        fee = (ExchangeModel.objects.filter(value='bitfinex').first()).transaction_fee
         bitfinex_data = Exchange("bitfinex", transaction_fee=fee)
-        bitfinex_data.currencies.extend(["BTC", "ETH", "ETC", "LTC"])
-        pairs = [["ETH", "BTC"], ["ETC", "BTC"], ["LTC", "BTC"]]
+        bitfinex_data.currencies.extend(["BTC", "ETH", "ETC", "LTC", "XRP", "TRX"])
+        pairs = [["ETH", "BTC"], ["ETC", "BTC"], ["LTC", "BTC"], ["XRP", "BTC"], ["TRX", "BTC"], ["TRX", "ETH"]]
         bitfinex_data.data = self.__get_bitfinex_currency_data(start, end, bitfinex_data.currencies, pairs)
         return bitfinex_data
 
@@ -191,8 +190,7 @@ class AlgorithmDataBuilder:
         return records
 
     def __get_bittrex_data(self, start, end):
-        # fee = (ExchangeModel.objects.filter(value='binance').first()).transaction_fee
-        fee = None
+        fee = (ExchangeModel.objects.filter(value='bittrex').first()).transaction_fee
         bittrex_data = Exchange("bittrex", transaction_fee=fee)
         bittrex_data.currencies.extend(["BTC", "ETH", "ETC", "LTC", "TRX", "XRP"])
         pairs = [["ETH", "BTC"], ["ETC", "BTC"], ["LTC", "BTC"], ["ETC", "ETH"], ["TRX", "BTC"], ["TRX", "ETH"],
