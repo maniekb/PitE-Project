@@ -1,3 +1,4 @@
+import calendar
 from datetime import datetime
 
 from binance.client import Client
@@ -43,8 +44,8 @@ class BinanceClient:
         return data
 
     def _approximate_missing_intervals(self, data, start, end, interval_milis):
-        start = (start.timestamp() + 7200) * 1000
-        end = (end.timestamp() + 7200) * 1000
+        start = calendar.timegm(start.utctimetuple()) * 1000
+        end = calendar.timegm(end.utctimetuple()) * 1000
         new_data = [dat.copy() for dat in data]
         current = start
         i = 0

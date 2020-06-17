@@ -1,3 +1,4 @@
+import calendar
 import logging
 import traceback
 from datetime import datetime
@@ -201,8 +202,8 @@ def arbitrage(request):
     elif request.method == 'POST':
         form = RunArbitrageForm(request.POST)
         if form.is_valid():
-            start = form.cleaned_data.get("start_date").timestamp()
-            end = form.cleaned_data.get("end_date").timestamp()
+            start = calendar.timegm(form.cleaned_data.get("start_date").utctimetuple()) - 7200
+            end = calendar.timegm(form.cleaned_data.get("end_date").utctimetuple()) - 7200
             start_currency = form.cleaned_data.get("start_currency")
             amount = form.cleaned_data.get("amount")
             include_margin = form.cleaned_data.get("include_margin")
@@ -216,16 +217,3 @@ def arbitrage(request):
             return render(request, 'arbitrage.html', {"show_result": True, "form": form, "result": result})
         else:
             return render(request, 'arbitrage.html', {"show_result": False, "form": form})
-
-
-def _timestamp_gmt_to_utc(timestamp):
-    return timestamp + 7200
-
-
-def _map_intervals(interval):
-    if interval == '5m':
-        return 300
-    if interval == '1h':
-        return 1800
-    if interval in ['1d', '1y']:
-        return 86400

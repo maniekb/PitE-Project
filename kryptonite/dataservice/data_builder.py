@@ -1,9 +1,10 @@
+# from kryptonite.models.models import Exchange as ExchangeModel
+import calendar
 from datetime import datetime
 
 from kryptonite.dataservice.binance_.binance_client import BinanceClient
 from kryptonite.dataservice.bitfinex.bitfinex_client import BitfinexClient
 from kryptonite.dataservice.poloniex.client import PoloniexClient, PoloniexChartDataCurrencyPair as PolCurrPair
-from kryptonite.models.models import Exchange as ExchangeModel
 
 
 class AlgorithmData:
@@ -70,8 +71,8 @@ class AlgorithmDataBuilder:
         self.__bitfinex_client = BitfinexClient()
 
     def get_data_last_hour(self):
-        end_time = round(datetime.now().timestamp())  # GMT timezone
-        start_time = end_time - 3600 * 3
+        end_time = round(calendar.timegm(datetime.utcnow().utctimetuple()))  # GMT timezone
+        start_time = end_time - 3600
         return self.get_data(start_time, end_time)
 
     def get_data(self, start, end):
@@ -87,7 +88,8 @@ class AlgorithmDataBuilder:
         return start - diff, end - diff
 
     def __get_poloniex_data(self, start, end):
-        fee = (ExchangeModel.objects.filter(value='poloniex').first()).transaction_fee
+        # fee = (ExchangeModel.objects.filter(value='poloniex').first()).transaction_fee
+        fee = None
         poloniex_data = Exchange("poloniex", transaction_fee=fee)
         poloniex_data.currencies.extend(["BTC", "ETH", "ETC"])
         pairs = [PolCurrPair.BTC_ETC, PolCurrPair.BTC_ETH, PolCurrPair.ETH_ETC]
@@ -120,7 +122,8 @@ class AlgorithmDataBuilder:
         return records
 
     def __get_binance_data(self, start, end):
-        fee = (ExchangeModel.objects.filter(value='binance').first()).transaction_fee
+        # fee = (ExchangeModel.objects.filter(value='binance').first()).transaction_fee
+        fee = None
         binance_data = Exchange("binance", transaction_fee=fee)
         binance_data.currencies.extend(["BTC", "ETH", "ETC"])
         pairs = [["ETC", "BTC"], ["ETH", "BTC"], ["ETC", "ETH"]]
@@ -145,15 +148,16 @@ class AlgorithmDataBuilder:
 
     def __get_binance_pair_data(self, pair, start, end):
         records = []
-        start_datetime = datetime.fromtimestamp(start - 7200)
-        end_datetime = datetime.fromtimestamp(end - 7200)
+        start_datetime = datetime.utcfromtimestamp(start)
+        end_datetime = datetime.utcfromtimestamp(end)
         data = self.__binance_client.get_algorithm_data(pair, '5m', start_datetime, end_datetime)
         for ele in data:
             records.append(Record(ele[0], float(ele[1])))
         return records
 
     def __get_bitfinex_data(self, start, end):
-        fee = (ExchangeModel.objects.filter(value='binance').first()).transaction_fee
+        # fee = (ExchangeModel.objects.filter(value='binance').first()).transaction_fee
+        fee = None
         bitfinex_data = Exchange("bitfinex", transaction_fee=fee)
         bitfinex_data.currencies.extend(["BTC", "ETH", "ETC", "LTC"])
         pairs = [["ETH", "BTC"], ["ETC", "BTC"], ["LTC", "BTC"]]

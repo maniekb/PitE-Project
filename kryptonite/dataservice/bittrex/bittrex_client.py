@@ -1,8 +1,7 @@
-import json
+import calendar
+from datetime import datetime
 
 import requests
-from datetime import datetime
-from datetime import timedelta
 
 
 class BittrexClient:
@@ -21,6 +20,6 @@ class BittrexClient:
 
     def _swap_datetime_with_mili_timestamp(self, data):
         for record in data:
-            record["startsAt"] = (int(
-                datetime.strptime(record["startsAt"], "%Y-%m-%dT%H:%M:%SZ").timestamp()) + 7200) * 1000
+            record["startsAt"] = int(
+                calendar.timegm(datetime.strptime(record["startsAt"], "%Y-%m-%dT%H:%M:%SZ").utctimetuple())) * 1000
         return data

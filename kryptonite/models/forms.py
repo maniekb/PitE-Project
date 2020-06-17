@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytz
 from bootstrap_datepicker_plus import DateTimePickerInput
@@ -32,8 +32,10 @@ class RegistrationForm(UserCreationForm):
 class RunArbitrageForm(forms.Form):
     start_currency = forms.ChoiceField(choices=[(currency.value, currency.value) for currency in get_all_currencies()])
     amount = forms.DecimalField(label='Currency amount', min_value=0.01, decimal_places=2)
-    start_date = forms.DateTimeField(label='Search start time', input_formats=["%d/%m/%Y %H:%M"], widget=DateTimePickerInput(format="%d/%m/%Y %H:%M"))
-    end_date = forms.DateTimeField(label='Search end time', input_formats=["%d/%m/%Y %H:%M"], widget=DateTimePickerInput(format="%d/%m/%Y %H:%M"))
+    start_date = forms.DateTimeField(label='Search start time', input_formats=["%d/%m/%Y %H:%M"],
+                                     widget=DateTimePickerInput(format="%d/%m/%Y %H:%M"))
+    end_date = forms.DateTimeField(label='Search end time', input_formats=["%d/%m/%Y %H:%M"],
+                                   widget=DateTimePickerInput(format="%d/%m/%Y %H:%M"))
     include_margin = forms.BooleanField(label='Include margin', required=False)
 
     def clean(self):
@@ -47,7 +49,7 @@ class RunArbitrageForm(forms.Form):
             self.add_error('start_date', msg)
             self.add_error('end_date', msg)
             raise forms.ValidationError(msg)
-        if end_date > pytz.utc.localize(datetime.now()):
+        if end_date - timedelta(hours=2) > pytz.utc.localize(datetime.utcnow()):
             msg = "End date cannot be in the future"
             self.add_error('end_date', msg)
             raise forms.ValidationError(msg)

@@ -1,3 +1,5 @@
+import calendar
+
 from kryptonite.dataservice.binance_.binance_client import BinanceClient
 from kryptonite.dataservice.bitfinex.bitfinex_client import BitfinexClient
 from kryptonite.dataservice.bittrex.bittrex_client import BittrexClient
@@ -33,8 +35,8 @@ class ChartBuilder:
         poloniex_symbol = 'USDT_' + self.single_symbol
         client = PoloniexClient()
         interval = 300
-        start = int(self.date_start.timestamp() + 7200)
-        end = int(self.date_end.timestamp() + 7200)
+        start = calendar.timegm(self.date_start.utctimetuple())
+        end = calendar.timegm(self.date_end.utctimetuple())
         if self.interval == '5m':
             interval = 300
         if self.interval == '1h':
@@ -50,8 +52,8 @@ class ChartBuilder:
 
         client = BitfinexClient()
         interval = self.interval
-        start = int(self.date_start.timestamp() + 7200)
-        end = int(self.date_end.timestamp() + 7200)
+        start = calendar.timegm(self.date_start.utctimetuple())
+        end = calendar.timegm(self.date_end.utctimetuple())
         if interval == '1d':
             interval = '1D'
         data = client.get_historical_data(bitfinex_symbol, start, end, interval)
