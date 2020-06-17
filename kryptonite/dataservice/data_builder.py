@@ -4,6 +4,7 @@ from datetime import datetime
 
 from kryptonite.dataservice.binance_.binance_client import BinanceClient
 from kryptonite.dataservice.bitfinex.bitfinex_client import BitfinexClient
+from kryptonite.dataservice.bittrex.bittrex_client import BittrexClient
 from kryptonite.dataservice.poloniex.client import PoloniexClient, PoloniexChartDataCurrencyPair as PolCurrPair
 
 
@@ -69,6 +70,7 @@ class AlgorithmDataBuilder:
         self.__poloniex_client = PoloniexClient()
         self.__binance_client = BinanceClient()
         self.__bitfinex_client = BitfinexClient()
+        self.__bittrex_client = BittrexClient()
 
     def get_data_last_hour(self):
         end_time = round(calendar.timegm(datetime.utcnow().utctimetuple()))  # GMT timezone
@@ -81,6 +83,7 @@ class AlgorithmDataBuilder:
         data.items.append(self.__get_poloniex_data(start, end))
         data.items.append(self.__get_binance_data(start, end))
         data.items.append(self.__get_bitfinex_data(start, end))
+        data.items.append(self.__get_bittrex_data(start, end))
         return data
 
     def __round_date(self, start, end):
@@ -156,7 +159,7 @@ class AlgorithmDataBuilder:
         return records
 
     def __get_bitfinex_data(self, start, end):
-        # fee = (ExchangeModel.objects.filter(value='binance').first()).transaction_fee
+        # fee = (ExchangeModel.objects.filter(value='bitfinex').first()).transaction_fee
         fee = None
         bitfinex_data = Exchange("bitfinex", transaction_fee=fee)
         bitfinex_data.currencies.extend(["BTC", "ETH", "ETC", "LTC"])
@@ -185,6 +188,39 @@ class AlgorithmDataBuilder:
         data = self.__bitfinex_client.get_historical_data(pair, start, end, '5m')
         for ele in data:
             records.append(Record(ele[0], float(ele[1])))
+        return records
+
+    def __get_bittrex_data(self, start, end):
+        # fee = (ExchangeModel.objects.filter(value='binance').first()).transaction_fee
+        fee = None
+        bittrex_data = Exchange("bittrex", transaction_fee=fee)
+        bittrex_data.currencies.extend(["BTC", "ETH", "ETC", "LTC", "TRX", "XRP"])
+        pairs = [["ETH", "BTC"], ["ETC", "BTC"], ["LTC", "BTC"], ["ETC", "ETH"], ["TRX", "BTC"], ["TRX", "ETH"],
+                 ["XRP", "BTC"], ["XRP", "ETH"]]
+        bittrex_data.data = self.__get_bittrex_currency_data(start, end, bittrex_data.currencies, pairs)
+        return bittrex_data
+
+    def __get_bittrex_currency_data(self, start, end, currencies, pairs):
+        data = []
+        for currency in currencies:
+            data.append(ExchangeData(currency))
+        for pair in pairs:
+            records = self.__get_bittrex_pair_data("{}-{}".format(pair[0], pair[1]), start, end)
+            for d in data:
+                if d.currency == pair[0]:
+                    d.trades.append(Trade(pair[1], records))
+                if d.currency == pair[1]:
+                    reciprocal = []
+                    for rec_index in range(len(records)):
+                        reciprocal.append(Record(records[rec_index].date, 1.0 / records[rec_index].rate))
+                    d.trades.append(Trade(pair[0], reciprocal))
+        return data
+
+    def __get_bittrex_pair_data(self, pair, start, end):
+        records = []
+        data = self.__bittrex_client.get_algorithm_data(pair, start, end, 'MINUTE_5')
+        for ele in data:
+            records.append(Record(ele["startsAt"], float(ele["open"])))
         return records
 
 

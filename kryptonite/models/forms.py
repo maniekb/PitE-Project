@@ -40,7 +40,6 @@ class RunArbitrageForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        amount = cleaned_data.get("amount")
         start_date = cleaned_data.get("start_date")
         end_date = cleaned_data.get("end_date")
         time_diff = (end_date - start_date).total_seconds() / (3600 * 24)
@@ -57,8 +56,4 @@ class RunArbitrageForm(forms.Form):
             msg = "Time difference must by at most one day"
             self.add_error('start_date', msg)
             self.add_error('end_date', msg)
-            raise forms.ValidationError(msg)
-        if amount <= 0:
-            msg = 'You must specify bigger amount of money'
-            self.add_error('amount', msg)
             raise forms.ValidationError(msg)
