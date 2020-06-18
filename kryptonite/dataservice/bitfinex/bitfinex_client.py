@@ -1,11 +1,7 @@
 import requests
-from bfxapi import Client
 
 
 class BitfinexClient:
-    bfx = Client(
-        logLevel='DEBUG',
-    )
 
     # @async_to_sync
     def get_historical_data(self, symbol, start, end, interval):

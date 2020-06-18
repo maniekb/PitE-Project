@@ -6,7 +6,7 @@ def run_algorithm(data, start_symbol, amount, include_fees=False):
     number = len(data.__dict__()["exchanges"][0]["data"][0]["trades"][0]["records"])
     result = algorithm(data.__dict__(), start_symbol, amount, number, include_fees)
     if result:
-        result["time"] = datetime.fromtimestamp(result["time"] / 1000 - 7200).strftime("%d/%m/%Y %H:%M:%S")
+        result["time"] = datetime.utcfromtimestamp(result["time"] / 1000 + 7200).strftime("%d/%m/%Y %H:%M:%S")
     return result
 
 

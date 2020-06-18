@@ -16,7 +16,12 @@ class PoloniexChartDataCurrencyPair(Enum):
     USDT_LTC = 3
     BTC_ETH = 4
     BTC_ETC = 5
-    ETH_ETC = 6
+    BTC_XRP = 6
+    BTC_TRX = 7
+    BTC_LTC = 8
+    ETH_ETC = 9
+    TRX_ETH = 10
+    TRX_XRP = 11
 
 
 class PoloniexClient(BaseClient):
