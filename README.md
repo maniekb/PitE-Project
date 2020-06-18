@@ -20,12 +20,11 @@ More information about arbitrage algorithm available in `doc/algorithm_descripti
 ## Technology
 We’ll use template system of Django framework to generate simple UI. As long as APIs provide historical data we won’t store any data in database - unless we find out during implementation it’s necessary.
 
-## APIs (might change)
-https://python-quoine.readthedocs.io/en/latest/quoine.html <br> 
-https://crex24.com/pl/trade-api <br>
-https://www.yobit.net/en/api/ <br>
-https://www.alphavantage.co/documentation/ <br>
-https://www.coingecko.com/en/api <br>
+## APIs  
+https://github.com/binance-exchange/binance-official-api-docs/blob/master/rest-api.md <br> 
+https://docs.poloniex.com/#introduction <br>
+https://docs.bitfinex.com/docs/introduction <br>
+https://bittrex.github.io/api/v3 <br>
 
 ## Week Plan
 **Week 1**
