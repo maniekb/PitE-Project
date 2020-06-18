@@ -20,7 +20,7 @@ html, body {
 
 .main-content {
     overflow: auto;
-    min-height: 60vh;
+    min-height: 75vh;
 }
 
 .dropdown-menu {
