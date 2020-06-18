@@ -1,0 +1,34 @@
+.results-table {
+    font-size: 200%;
+    text-align: center;
+    margin-bottom: 5vh;
+    width: 100%;
+}
+
+.text-background {
+    background: linear-gradient(to bottom, #2bad4e 35%, #173306 100%);
+}
+
+.circle {
+    background: linear-gradient(to bottom, #2bad4e 35%, #173306 100%);
+    display: inline-block;
+    min-height: 60px;
+    min-width: 60px;
+    border-radius: 50%;
+    margin-top: 25px;
+}
+
+.text-circle {
+    margin-top: 9px;
+    text-align: center;
+    font-size: 80%;
+}
+
+.above-arrow {
+    font-size: 50%;
+    height: 50px;
+}
+
+.arrow {
+    font-size: 200%;
+}
