@@ -15,6 +15,7 @@ from django.shortcuts import render, redirect
 from kryptonite.dataservice.chart_builder import ChartBuilder
 from .algo.algo import run_algorithm
 from .dataservice.data_builder import AlgorithmDataBuilder
+from .dataservice.historic_results import get_last_week_historic_results, get_historic_result_by_date
 from .models.forms import RegistrationForm, RunArbitrageForm
 from .userservice.user_service import *
 
@@ -196,9 +197,18 @@ def account(request):
 
 @login_required
 def arbitrage(request):
+    historic_data = [{"time": result["time"], "profit_rate": result["results"]["value"] / result["results"][
+        "start_value"]} for result in get_last_week_historic_results()]
     if request.method == 'GET':
         form = RunArbitrageForm()
-        return render(request, 'arbitrage.html', {"show_result": False, "form": form})
+        time = request.GET.get('time', '')
+        if time:
+            time = datetime.strptime(time, "%a, %d %b %Y %H:%M:%S %Z")
+            result = get_historic_result_by_date(time)
+            return render(request, 'arbitrage.html',
+                          {"show_result": True, "form": form, "historic_results": historic_data, "result": result})
+        return render(request, 'arbitrage.html',
+                      {"show_result": False, "form": form, "historic_results": historic_data})
     elif request.method == 'POST':
         form = RunArbitrageForm(request.POST)
         if form.is_valid():
@@ -214,6 +224,8 @@ def arbitrage(request):
             except Exception as err:
                 print("Crash in algorithm!!!\n{}".format(traceback.format_exc()))
                 result = {}
-            return render(request, 'arbitrage.html', {"show_result": True, "form": form, "result": result})
+            return render(request, 'arbitrage.html',
+                          {"show_result": True, "form": form, "historic_results": historic_data, "result": result})
         else:
-            return render(request, 'arbitrage.html', {"show_result": False, "form": form})
+            return render(request, 'arbitrage.html',
+                          {"show_result": False, "historic_results": historic_data, "form": form})

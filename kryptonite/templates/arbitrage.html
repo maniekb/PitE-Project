@@ -7,13 +7,18 @@
             </h1>
         </div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <form method="post">
                     {% csrf_token %}
                     {% load bootstrap4 %}
                     {% bootstrap_form form %}
                     <button class="btn btn-dark" type="submit">Find arbitrage</button>
                 </form>
+            </div>
+            <div class="col-md-9">
+                <div style="padding: 10px 10px 10px 30px;">
+                    <canvas id="resultsChart"></canvas>
+                </div>
             </div>
         </div>
         <br>
@@ -31,7 +36,7 @@
                         <br>
                         <table class="results-table">
                             <tr>
-                                <td >Starting currency</td>
+                                <td>Starting currency</td>
                                 <td></td>
                                 <td class="text-background">{{ result.exchanges.0 }}</td>
                                 <td></td>
@@ -41,21 +46,29 @@
                             </tr>
                             <tr class="above-arrow">
                                 <td></td>
-                                <td>{{ result.rates.0 }}</td>
+                                <td>{{ result.rates.0 }} {% if result.fees %} <br> - {{ result.fees.0 }} % {% endif %}</td>
                                 <td></td>
-                                <td>{{ result.rates.1 }}</td>
+                                <td>{{ result.rates.1 }} {% if result.fees %} <br> - {{ result.fees.1 }} % {% endif %}</td>
                                 <td></td>
-                                <td>{{ result.rates.2 }}</td>
+                                <td>{{ result.rates.2 }} {% if result.fees %} <br> - {{ result.fees.2 }} % {% endif %}</td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td class="circle"><div class="text-circle">{{ result.start_currency }}</div></td>
+                                <td class="circle">
+                                    <div class="text-circle">{{ result.start_currency }}</div>
+                                </td>
                                 <td class="arrow">&#8594;</td>
-                                <td class="circle"><div class="text-circle">{{ result.currencies.0 }}</div></td>
+                                <td class="circle">
+                                    <div class="text-circle">{{ result.currencies.0 }}</div>
+                                </td>
                                 <td class="arrow">&#8594;</td>
-                                <td class="circle"><div class="text-circle">{{ result.currencies.1 }}</div></td>
+                                <td class="circle">
+                                    <div class="text-circle">{{ result.currencies.1 }}</div>
+                                </td>
                                 <td class="arrow">&#8594;</td>
-                                <td class="circle"><div class="text-circle">{{ result.currencies.2 }}</div></td>
+                                <td class="circle">
+                                    <div class="text-circle">{{ result.currencies.2 }}</div>
+                                </td>
                             </tr>
                         </table>
                     {% else %}
@@ -65,59 +78,9 @@
             </div>
         {% endif %}
     </div>
+    {{ historic_results|json_script:"results_data" }}
     {{ form.media }}
-
-    <script>
-        $(function () {
-            $('form').on('submit', function (e) {
-                $('body').append('<div id="loading"></div>')
-                Swal.fire({
-                    title: 'Running arbitrage',
-                    html: 'Loading data, it might take a while.',
-                    allowOutsideClick: false,
-                    onBeforeOpen: () => {
-                        Swal.showLoading()
-                    }
-                })
-            });
-
-        })
-    </script>
-    <style>
-        .results-table {
-            font-size: 200%;
-            text-align: center;
-            margin-bottom: 5vh;
-            width: 100%;
-        }
-
-        .text-background{
-            background: linear-gradient(to bottom, #2bad4e 35%, #173306 100%);
-        }
-
-        .circle {
-            background: linear-gradient(to bottom, #2bad4e 35%, #173306 100%);
-            display: inline-block;
-            min-height: 60px;
-            min-width: 60px;
-            border-radius: 50%;
-            margin-top: 25px;
-        }
-
-        .text-circle {
-            margin-top: 9px;
-            text-align: center;
-            font-size: 80%;
-        }
-
-        .above-arrow {
-            font-size: 50%;
-            height: 50px;
-        }
-
-        .arrow{
-            font-size: 200%;
-        }
-
-    </style>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'arbitrage_style.css' %}">
+    <script src={% static 'arbitrage_results.js' %}></script>
 {% endblock %}
