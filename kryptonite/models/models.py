@@ -10,7 +10,7 @@ class Currency(models.Model):
 class Exchange(models.Model):
     label = models.CharField(max_length=30)
     value = models.CharField(max_length=30)
-    transaction_fee = models.FloatField()
+    transaction_fee = models.FloatField(default=0.02)
 
 
 class FavouriteCurrency(models.Model):
@@ -26,3 +26,8 @@ class FavouriteExchange(models.Model):
 class TestScheduleLog(models.Model):
     time = models.CharField(max_length=50)
     message = models.CharField(max_length=100)
+
+
+class HistoricalResults(models.Model):
+    time = models.DateTimeField(unique_for_date=True)
+    results = models.CharField(max_length=800)
