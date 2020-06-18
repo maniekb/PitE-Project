@@ -31,15 +31,15 @@
                         <br>
                         <table class="results-table">
                             <tr>
-                                <td>Starting currency</td>
+                                <td >Starting currency</td>
                                 <td></td>
-                                <td>{{ result.exchanges.0 }}</td>
+                                <td class="text-background">{{ result.exchanges.0 }}</td>
                                 <td></td>
-                                <td>{{ result.exchanges.1 }}</td>
+                                <td class="text-background">{{ result.exchanges.1 }}</td>
                                 <td></td>
-                                <td>{{ result.exchanges.2 }}</td>
+                                <td class="text-background">{{ result.exchanges.2 }}</td>
                             </tr>
-                            <tr class="arrow">
+                            <tr class="above-arrow">
                                 <td></td>
                                 <td>{{ result.rates.0 }}</td>
                                 <td></td>
@@ -49,13 +49,13 @@
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>{{ result.start_currency }}</td>
-                                <td>&#8594;</td>
-                                <td>{{ result.currencies.0 }}</td>
-                                <td>&#8594;</td>
-                                <td>{{ result.currencies.1 }}</td>
-                                <td>&#8594;</td>
-                                <td>{{ result.currencies.2 }}</td>
+                                <td class="circle"><div class="text-circle">{{ result.start_currency }}</div></td>
+                                <td class="arrow">&#8594;</td>
+                                <td class="circle"><div class="text-circle">{{ result.currencies.0 }}</div></td>
+                                <td class="arrow">&#8594;</td>
+                                <td class="circle"><div class="text-circle">{{ result.currencies.1 }}</div></td>
+                                <td class="arrow">&#8594;</td>
+                                <td class="circle"><div class="text-circle">{{ result.currencies.2 }}</div></td>
                             </tr>
                         </table>
                     {% else %}
@@ -87,10 +87,36 @@
         .results-table {
             font-size: 200%;
             text-align: center;
+            margin-bottom: 5vh;
+            width: 100%;
         }
 
-        .arrow {
+        .text-background{
+            background: linear-gradient(to bottom, #2bad4e 35%, #173306 100%);
+        }
+
+        .circle {
+            background: linear-gradient(to bottom, #2bad4e 35%, #173306 100%);
+            display: inline-block;
+            min-height: 60px;
+            min-width: 60px;
+            border-radius: 50%;
+            margin-top: 25px;
+        }
+
+        .text-circle {
+            margin-top: 9px;
+            text-align: center;
+            font-size: 80%;
+        }
+
+        .above-arrow {
             font-size: 50%;
+            height: 50px;
+        }
+
+        .arrow{
+            font-size: 200%;
         }
 
     </style>
