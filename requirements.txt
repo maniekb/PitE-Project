@@ -13,7 +13,7 @@ whitenoise==5.1.0
 requests==2.23.0
 sweetify==2.0.0
 python-binance==0.7.5
-numpy==1.18.5
+numpy==1.22.0
 pandas==1.0.4
 django-compression-middleware==0.4.1
 apscheduler==3.6.3
